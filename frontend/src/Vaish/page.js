@@ -5,6 +5,7 @@ import getTransactions from "../services/transaction.js";
 import { getUser, getUserByEmail } from "../services/user.js";
 import { createCheckDeposit } from "../services/deposit_check.js";
 import { useAuth0 } from "@auth0/auth0-react";
+import makeNelleTransaction from "../services/nelle.js";
 // Helper function to generate random dates for the transactions
 
 
@@ -19,19 +20,33 @@ const VaishPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", dollars: "" });
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setNelleError(null); // Reset error message
+
     const email = event.target.email.value;
-    const dollars = event.target.dollars.value;
+    const dollars = parseFloat(event.target.dollars.value);
 
-    // Store the data in the state
-    setFormData({ email, dollars });
+    try {
+      // Call the Nelle transaction API
+      await makeNelleTransaction(user.id, email, dollars);
 
-    // Optionally, log the data or send it to an API
-    console.log("Stored Data:", { email, dollars });
+      // Close the modal after success
+      document.getElementById("my_modal_3").close();
 
-    // Close the modal if needed
-    document.getElementById("my_modal_3").close();
+      // Optionally update the transactions to reflect the new one
+      const updatedTransactions = await getTransactions(user.id);
+      setTransactions(updatedTransactions);
+    } catch (error) {
+      // Handle specific errors and display messages
+      if (error.message.includes("Insufficient balance")) {
+        setNelleError("Insufficient balance to complete the transaction.");
+      } else if (error.message.includes("not found")) {
+        setNelleError("Recipient not found. Please check the email address.");
+      } else {
+        setNelleError("An error occurred. Please try again later.");
+      }
+    }
   };
   // State to manage modals
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -40,6 +55,7 @@ const VaishPage = () => {
   const [transactions, setTransactions] = useState([])
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
+  const [nelleError, setNelleError] = useState(null); // For Nelle error messages
 
   const { user: current_user, isLoading } = useAuth0();
 
@@ -81,17 +97,14 @@ const VaishPage = () => {
 
   // Handle deposit confirmation
   const handleDeposit = async () => {
-    // Close the modal first
+    console.log("Image Base64 Data:", imageBase64);
+
     document.getElementById("my_modal_4").close();
   
     try {
-      // Call the API to create a check deposit
       await createCheckDeposit(user['id'], imageBase64, parseFloat(depositAmount));
-  
-      // Show the confirmation message after the deposit is successfully created
       setShowConfirmation(true);
   
-      // Hide the confirmation message after 3 seconds
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
@@ -106,7 +119,12 @@ const VaishPage = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUploadedImage(reader.result); // Save the base64 image to state
+        const base64String = reader.result;
+        setUploadedImage(base64String); // For preview
+  
+        // Extract the Base64 string without the Data URL prefix
+        const base64Data = base64String.split(',')[1];
+        setImageBase64(base64Data);  // For the deposit API
       };
       reader.readAsDataURL(file);
     }
@@ -227,67 +245,69 @@ const VaishPage = () => {
                 Deposit Check
               </button>
               <button
-                className="font-bold btn text-white ml-10 w-48 py-4 bg-indigo-500 hover:bg-indigo-600 rounded-2xl "
-                onClick={() =>
-                  document.getElementById("my_modal_3").showModal()
-                }
-              >
-                Nelle
+          className="font-bold btn text-white ml-10 w-48 py-4 bg-indigo-500 hover:bg-indigo-600 rounded-2xl "
+          onClick={() => document.getElementById("my_modal_3").showModal()}
+        >
+          Nelle
+        </button>
+
+        <dialog id="my_modal_3" className="modal">
+          <div method="dialog" className="modal-box">
+            <form onSubmit={handleSubmit}>
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
               </button>
+              <h3 className="font-bold text-lg">Nelle</h3>
+              <p className="py-4">Send money to people you know</p>
 
-              <dialog id="my_modal_3" className="modal">
-                <div method="dialog" className="modal-box">
-                  <form onSubmit={handleSubmit} >
-                    {/* Close button */}
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                      ✕
-                    </button>
-                    <h3 className="font-bold text-lg">Nelle</h3>
-                    <p className="py-4">Send money to people you know</p>
+              {/* Email input */}
+              <label className="block mb-2 text-sm font-medium" htmlFor="email">
+                Email:
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="input input-bordered w-full mb-4"
+                placeholder="Enter recipient email"
+                required
+              />
 
-                    {/* Email input */}
-                    <label
-                      className="block mb-2 text-sm font-medium"
-                      htmlFor="email"
-                    >
-                      Email:
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="input input-bordered w-full mb-4"
-                      placeholder="Enter your email"
-                      required
-                    />
+              {/* Dollar input */}
+              <label
+                className="block mb-2 text-sm font-medium"
+                htmlFor="dollars"
+              >
+                Amount in dollars:
+              </label>
+              <input
+                type="number"
+                id="dollars"
+                name="dollars"
+                className="input input-bordered w-full mb-4"
+                placeholder="Enter the amount"
+                min="1"
+                required
+              />
 
-                    {/* Dollar input */}
-                    <label
-                      className="block mb-2 text-sm font-medium"
-                      htmlFor="dollars"
-                    >
-                      Amount in dollars:
-                    </label>
-                    <input
-                      type="number"
-                      id="dollars"
-                      name="dollars"
-                      className="input input-bordered w-full mb-4"
-                      placeholder="Enter the amount"
-                      min="1"
-                      required
-                    />
+              {/* Error message */}
+              {nelleError && (
+                <p className="text-red-500 text-sm font-medium mt-2">
+                  {nelleError}
+                </p>
+              )}
 
-                    {/* Send button */}
-                    <button
-                      className="btn btn-primary w-full mt-4"
-                      type="submit"
-                    >
-                      Send
-                    </button>
-                  </form>
-                </div>
-              </dialog>
+              {/* Send button */}
+              <button
+                className="btn btn-primary w-full mt-4"
+                type="submit"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </dialog>
+
 
               <dialog id="my_modal_4" className="modal">
   <div className="modal-box w-11/12 max-w-5xl">
@@ -409,7 +429,7 @@ const VaishPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-  {transactions.length === 0 ? (
+  {!transactions || transactions.length === 0 ? (
     <tr>
       <td colSpan="4" className="text-center text-gray-500 py-4">
         No recent transactions

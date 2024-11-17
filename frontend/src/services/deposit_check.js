@@ -1,4 +1,4 @@
-import apiClient from './api';
+import apiClient from "./api";
 
 /**
  * Create a new check deposit.
@@ -9,15 +9,21 @@ import apiClient from './api';
  * @returns {Promise} - A promise resolving with the API response.
  */
 export async function createCheckDeposit(userId, imageBase64, amount) {
-  try {
-    const response = await apiClient.post('/check_deposit', {
-      user_id: userId.toString(),
-      image_b64: imageBase64,
-      amount: amount,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error creating check deposit:', error.response?.data || error.message);
-    throw error;
-  }
+	try {
+    console.log("b64")
+		console.log(imageBase64);
+
+		const response = await apiClient.post("/check_deposit", {
+			user_id: userId.toString(),
+			image_b64: imageBase64,
+			amount: amount,
+		});
+		return response.data;
+	} catch (error) {
+		console.error(
+			"Error creating check deposit:",
+			error.response?.data || error.message
+		);
+		throw error;
+	}
 }
