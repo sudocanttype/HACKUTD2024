@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect} from 'react';
 import { ArrowUpDown, AlertTriangle, FileText, Search, CheckCircle, XCircle } from 'lucide-react';
 import { getAllUsers } from '../services/user';
 import getTransactions from "../services/transaction.js";
-import { getPendingChecks } from '../services/deposit_check';
+import { getPendingChecks, approveCheck, removeCheck } from '../services/deposit_check';
 
 function formatSource(b64){
   return b64;
@@ -30,10 +30,6 @@ const Page = () => {
     document.getElementById('check_modal').showModal();
   };
 
-  const handleCheckDecision = (approved) => {
-    console.log(`Check ${selectedCheck.id} was ${approved ? 'approved' : 'denied'}`);
-    document.getElementById('check_modal').close();
-  };
   const [clients, setClients] = useState([])
 
   // Complete mock 
@@ -46,22 +42,32 @@ const Page = () => {
     setTransactions(transactions);
     setCurrentTransactions(transactions);
   };
-  useEffect(() => {
-
   const fetchChecks = async () => {
     const checks = await getPendingChecks();
     console.log(checks['data']['check_deposits'])
     setPendingChecks(checks['data']['check_deposits']);
   };
-  const fetchUsers = async () => {
-    const users = await getAllUsers();
-    setusers(users);
-    console.log(users);
-    setClients(users);
 
-    setSearchResults(clients);
-    setShowResults(true);
+  const handleCheckDecision = async (approved) => {
+    console.log(`Check ${selectedCheck.check_id} was ${approved ? 'approved' : 'denied'}`);
+    if (approved){
+      await approveCheck(selectedCheck.check_id)
+    } else{
+      await removeCheck(selectedCheck.check_id)
+    }
+    document.getElementById('check_modal').close();
+    await fetchChecks()
   };
+  useEffect(() => {
+      const fetchUsers = async () => {
+        const users = await getAllUsers();
+        setusers(users);
+        console.log(users);
+        setClients(users);
+
+        setSearchResults(users);
+        setShowResults(true);
+      };
     fetchUsers();
     fetchChecks();
   }, []);
@@ -70,9 +76,9 @@ const Page = () => {
     setSelectedClient(client);
     fetchTransactions(client.id)
 
-    console.log(currentTransactions)
-    document.getElementById('transaction_modal').showModal();
-  };
+  console.log(currentTransactions)
+  document.getElementById('transaction_modal').showModal();
+};
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
