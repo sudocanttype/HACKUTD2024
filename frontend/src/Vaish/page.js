@@ -122,7 +122,7 @@ const VaishPage = () => {
         setUploadedImage(base64String); // For preview
   
         // Extract the Base64 string without the Data URL prefix
-        const base64Data = base64String.split(',')[1];
+        const base64Data = base64String;
         setImageBase64(base64Data);  // For the deposit API
       };
       reader.readAsDataURL(file);

@@ -4,6 +4,11 @@ import { getAllUsers } from '../services/user';
 import getTransactions from "../services/transaction.js";
 import { getPendingChecks } from '../services/deposit_check';
 
+function formatSource(b64){
+  // return b64;
+  return `data:image/png;base64,${b64}`
+}
+
 const Page = () => {
   const userName = 'Sahas Sharma';
   const assetsManaged = '$1.2 Billion';
@@ -361,7 +366,7 @@ const Page = () => {
                   </div>
                   <div className="border rounded-lg p-4 bg-base-200">
                     <img
-                      src={selectedCheck.image_b64}
+                      src={formatSource(selectedCheck.image_b64)}
                       alt="Check"
                       className="w-full h-auto rounded"
                     />
