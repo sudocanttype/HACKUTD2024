@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthWrapper from "../components/authwrapper";
 import getTransactions from "../services/transaction.js";
+import { getUser } from "../services/user.js";
+import { createCheckDeposit } from "../services/deposit_check.js";
 // Helper function to generate random dates for the transactions
-const generateRandomDate = () => {
-  const start = new Date(2023, 0, 1); // January 1st, 2023
-  const end = new Date(); // Current date
-  const randomDate = new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  );
-  return randomDate.toLocaleDateString();
-};
 
+
+function addCommas(number){
+  return "$"+number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 const VaishPage = () => {
 
@@ -20,6 +18,8 @@ const VaishPage = () => {
   const [imageBase64, setImageBase64] = useState(""); // Store base64 image
   const [depositAmount, setDepositAmount] = useState(""); // Store deposit amount
   const [transactions, setTransactions] = useState([])
+  const [user, setUser] = useState(null);
+
   const userID = 1; //TODO: really get
 
   useEffect(() => {
@@ -28,7 +28,14 @@ const VaishPage = () => {
       setTransactions(transactions);
     };
 
+    const fetchUser = async () => {
+      const user = await getUser(userID);
+      console.log(user);
+      setUser(user);
+    }
+
     fetchTransactions();
+    fetchUser();
   }, [userID]);
 
 
@@ -42,19 +49,25 @@ const VaishPage = () => {
   const toggleShowAll = () => setShowAll(!showAll);
 
   // Handle deposit confirmation
-  const handleDeposit = () => {
-    // First close the modal
-    document.getElementById("my_modal_3").close();
-
-    // Then show the confirmation message after a brief delay
-    setTimeout(() => {
+  const handleDeposit = async () => {
+    // Close the modal first
+    document.getElementById("my_modal_4").close();
+  
+    try {
+      // Call the API to create a check deposit
+      await createCheckDeposit(userID, imageBase64, parseFloat(depositAmount));
+  
+      // Show the confirmation message after the deposit is successfully created
       setShowConfirmation(true);
-
-      // Hide the confirmation message after 2 seconds
+  
+      // Hide the confirmation message after 3 seconds
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
-    }, 100); // Small delay to ensure modal closes smoothly
+    } catch (error) {
+      console.error("Failed to deposit check:", error);
+      alert("An error occurred while processing your deposit. Please try again.");
+    }
   };
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -106,7 +119,7 @@ const VaishPage = () => {
           <div className="flex justify-between items-center my-5">
             <div className="w-1/2">
               <h1 className="text-4xl font-semibold text-gray-800">
-                Welcome, Vaishnavi
+                Welcome, {(user == null) ? "" : user.name}.
               </h1>
               <p className="text-lg text-gray-600 mt-2">
                 Here's your financial overview:
@@ -116,7 +129,7 @@ const VaishPage = () => {
                 <div className="flex items-center justify-between">
                   <div className="text-gray-600">Current Balance</div>
                   <div className="text-3xl font-semibold text-indigo-600">
-                    $89,400
+                    {(user == null) ? "" : addCommas(user.balance)}
                   </div>
                 </div>
               </div>
