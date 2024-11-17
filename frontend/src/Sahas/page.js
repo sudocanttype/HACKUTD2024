@@ -6,42 +6,181 @@ const Page = () => {
   const assetsManaged = '$1.2 Billion';
   const activeClients = 350;
 
-  // Mock transaction data for each client
+  const clients = [
+    {
+      id: 1,
+      name: "Lloyd Blankfein",
+      accountNumber: "8472-9123",
+      ssn: "555-34-5678",
+      birthday: "1954-09-20",
+      address: "200 West Street, New York, NY, USA",
+      email: "lloyd.blankfein@goldmansachs.com",
+      phone: "212-555-1234",
+      balance: 1778486.33,
+      riskLevel: "Medium"
+    },
+    {
+      id: 2,
+      name: "David Solomon",
+      accountNumber: "8472-9124",
+      ssn: "555-98-1234",
+      birthday: "1962-01-01",
+      address: "200 West Street, New York, NY, USA",
+      email: "david.solomon@goldmansachs.com",
+      phone: "212-555-5678",
+      balance: 2198486.33,
+      riskLevel: "Low"
+    },
+    {
+      id: 3,
+      name: "Henry Paulson",
+      accountNumber: "8472-9125",
+      ssn: "555-22-4352",
+      birthday: "1946-03-28",
+      address: "1775 I Street NW, Washington, D.C., USA",
+      email: "henry.paulson@treasury.gov",
+      phone: "212-555-6789",
+      balance: 1806046.71,
+      riskLevel: "Low"
+    },
+    {
+      id: 4,
+      name: "Gary Cohn",
+      accountNumber: "8472-9126",
+      ssn: "555-32-4951",
+      birthday: "1960-08-25",
+      address: "200 West Street, New York, NY, USA",
+      email: "gary.cohn@goldmansachs.com",
+      phone: "212-555-1122",
+      balance: 3681619.00,
+      riskLevel: "High"
+    },
+    {
+      id: 5,
+      name: "Jim O'Neill",
+      accountNumber: "8472-9127",
+      ssn: "555-43-5012",
+      birthday: "1957-12-04",
+      address: "200 West Street, New York, NY, USA",
+      email: "jim.oneill@goldmansachs.com",
+      phone: "212-555-3344",
+      balance: 5830065.24,
+      riskLevel: "Medium"
+    },
+    {
+      id: 6,
+      name: "Ruth Porat",
+      accountNumber: "8472-9128",
+      ssn: "555-54-6720",
+      birthday: "1957-09-22",
+      address: "200 West Street, New York, NY, USA",
+      email: "ruth.porat@goldmansachs.com",
+      phone: "212-555-5566",
+      balance: 6337625.60,
+      riskLevel: "Low"
+    },
+    {
+      id: 7,
+      name: "Stephen Scherr",
+      accountNumber: "8472-9129",
+      ssn: "555-65-4321",
+      birthday: "1962-06-12",
+      address: "200 West Street, New York, NY, USA",
+      email: "stephen.scherr@goldmansachs.com",
+      phone: "212-555-7788",
+      balance: 3473019.87,
+      riskLevel: "Medium"
+    },
+    {
+      id: 8,
+      name: "Shannon Oshaughnessy",
+      accountNumber: "8472-9130",
+      ssn: "555-76-1542",
+      birthday: "1970-02-15",
+      address: "200 West Street, New York, NY, USA",
+      email: "shannon.oshaughnessy@goldmansachs.com",
+      phone: "212-555-9911",
+      balance: 6303050.37,
+      riskLevel: "High"
+    },
+    {
+      id: 9,
+      name: "Peter Weill",
+      accountNumber: "8472-9131",
+      ssn: "555-85-6789",
+      birthday: "1944-07-03",
+      address: "200 West Street, New York, NY, USA",
+      email: "peter.weill@goldmansachs.com",
+      phone: "212-555-1234",
+      balance: 4421005.06,
+      riskLevel: "Low"
+    },
+    {
+      id: 10,
+      name: "Mark Schwartz",
+      accountNumber: "8472-9132",
+      ssn: "555-12-9876",
+      birthday: "1958-05-21",
+      address: "200 West Street, New York, NY, USA",
+      email: "mark.schwartz@goldmansachs.com",
+      phone: "212-555-4321",
+      balance: 2996634.22,
+      riskLevel: "Medium"
+    }
+  ];
+
   const clientTransactions = {
-    '8472-9123': [ // Sarah Johnson
+    '8472-9123': [
       { id: 1, date: '2024-03-15', amount: 50000, type: 'Deposit', status: 'Completed' },
       { id: 2, date: '2024-03-10', amount: -15000, type: 'Withdrawal', status: 'Completed' },
       { id: 3, date: '2024-03-05', amount: 25000, type: 'Investment', status: 'Pending' },
     ],
-    '8472-9124': [ // Michael Chen
+    '8472-9124': [
       { id: 4, date: '2024-03-14', amount: 100000, type: 'Transfer', status: 'Completed' },
       { id: 5, date: '2024-03-09', amount: -30000, type: 'Withdrawal', status: 'Failed' },
       { id: 6, date: '2024-03-01', amount: 75000, type: 'Deposit', status: 'Completed' },
     ],
-    '8472-9125': [ // Emily Rodriguez
+    '8472-9125': [
       { id: 7, date: '2024-03-13', amount: 20000, type: 'Investment', status: 'Completed' },
       { id: 8, date: '2024-03-08', amount: -5000, type: 'Withdrawal', status: 'Completed' },
       { id: 9, date: '2024-03-03', amount: 15000, type: 'Deposit', status: 'Completed' },
     ],
-    '8472-9126': [ // David Kim
+    '8472-9126': [
       { id: 10, date: '2024-03-12', amount: 200000, type: 'Transfer', status: 'Pending' },
       { id: 11, date: '2024-03-07', amount: -50000, type: 'Withdrawal', status: 'Completed' },
       { id: 12, date: '2024-03-02', amount: 150000, type: 'Deposit', status: 'Completed' },
     ],
-    '8472-9127': [ // Rachel Thompson
+    '8472-9127': [
       { id: 13, date: '2024-03-11', amount: 30000, type: 'Investment', status: 'Completed' },
       { id: 14, date: '2024-03-06', amount: -10000, type: 'Withdrawal', status: 'Failed' },
       { id: 15, date: '2024-03-04', amount: 25000, type: 'Deposit', status: 'Completed' },
     ],
+    '8472-9128': [
+      { id: 16, date: '2024-03-15', amount: 60000, type: 'Investment', status: 'Completed' },
+      { id: 17, date: '2024-03-10', amount: -20000, type: 'Withdrawal', status: 'Completed' },
+      { id: 18, date: '2024-03-05', amount: 40000, type: 'Deposit', status: 'Pending' },
+    ],
+    '8472-9129': [
+      { id: 19, date: '2024-03-14', amount: 80000, type: 'Transfer', status: 'Completed' },
+      { id: 20, date: '2024-03-09', amount: -25000, type: 'Withdrawal', status: 'Failed' },
+      { id: 21, date: '2024-03-01', amount: 65000, type: 'Deposit', status: 'Completed' },
+    ],
+    '8472-9130': [
+      { id: 22, date: '2024-03-13', amount: 45000, type: 'Investment', status: 'Completed' },
+      { id: 23, date: '2024-03-08', amount: -15000, type: 'Withdrawal', status: 'Completed' },
+      { id: 24, date: '2024-03-03', amount: 35000, type: 'Deposit', status: 'Completed' },
+    ],
+    '8472-9131': [
+      { id: 25, date: '2024-03-12', amount: 150000, type: 'Transfer', status: 'Pending' },
+      { id: 26, date: '2024-03-07', amount: -40000, type: 'Withdrawal', status: 'Completed' },
+      { id: 27, date: '2024-03-02', amount: 120000, type: 'Deposit', status: 'Completed' },
+    ],
+    '8472-9132': [
+      { id: 28, date: '2024-03-11', amount: 70000, type: 'Investment', status: 'Completed' },
+      { id: 29, date: '2024-03-06', amount: -30000, type: 'Withdrawal', status: 'Failed' },
+      { id: 30, date: '2024-03-04', amount: 55000, type: 'Deposit', status: 'Completed' },
+    ],
   };
-
-  const clients = [
-    { id: 1, name: 'Sarah Johnson', accountNumber: '8472-9123', riskLevel: 'Low' },
-    { id: 2, name: 'Michael Chen', accountNumber: '8472-9124', riskLevel: 'Medium' },
-    { id: 3, name: 'Emily Rodriguez', accountNumber: '8472-9125', riskLevel: 'Low' },
-    { id: 4, name: 'David Kim', accountNumber: '8472-9126', riskLevel: 'High' },
-    { id: 5, name: 'Rachel Thompson', accountNumber: '8472-9127', riskLevel: 'Medium' }
-  ];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -55,16 +194,17 @@ const Page = () => {
     const searchValue = event.target.value.toLowerCase();
     setSearchTerm(searchValue);
     
-    if (searchValue.length >= 2) {
-      const filtered = clients.filter((client) =>
+    if (searchValue.length >= 1) {
+      const filtered = clients.filter(client =>
         client.name.toLowerCase().includes(searchValue) ||
-        client.accountNumber.includes(searchValue)
+        client.accountNumber.includes(searchValue) ||
+        client.email.toLowerCase().includes(searchValue)
       );
       setSearchResults(filtered);
       setShowResults(true);
     } else {
-      setShowResults(false);
-      setSearchResults([]);
+      setShowResults(true);
+      setSearchResults(clients);
     }
   };
 
@@ -108,6 +248,18 @@ const Page = () => {
     }
   };
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
+  React.useEffect(() => {
+    setSearchResults(clients);
+    setShowResults(true);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-grow p-5 bg-gradient-to-b from-primary/30 to-base-100">
@@ -147,24 +299,37 @@ const Page = () => {
             </div>
             <input
               type="text"
-              placeholder="Search by client name or account number..."
+              placeholder="Search by client name, account number, or email..."
               value={searchTerm}
               onChange={handleSearch}
               className="input input-bordered w-full pl-12 focus:input-primary"
             />
           </div>
 
-          {/* Search Results */}
+          {/* Search Results (continuing from showResults &&) */}
           {showResults && (
             <div className="mt-4 card bg-base-100 shadow-xl">
               <div className="card-body p-0">
                 {searchResults.length > 0 ? (
                   searchResults.map((client) => (
-                    <div key={client.id} className="p-6 border-b border-base-200 last:border-none">
+                    <div key={client.id} className="p-6 border-b border-base-200 last:border-none hover:bg-base-200/50">
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-semibold text-lg text-primary">{client.name}</h3>
                           <p className="text-base-content/80">Account: {client.accountNumber}</p>
+                          <p className="text-base-content/70">{client.email}</p>
+                          <div className="flex gap-2 mt-1">
+                            <span className={`badge ${
+                              client.riskLevel === 'High' ? 'badge-error' : 
+                              client.riskLevel === 'Medium' ? 'badge-warning' : 
+                              'badge-success'
+                            }`}>
+                              {client.riskLevel} Risk
+                            </span>
+                            <span className="badge badge-primary">
+                              {formatCurrency(client.balance)}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex gap-3">
                           <button
@@ -233,9 +398,11 @@ const Page = () => {
                       <td>{new Date(transaction.date).toLocaleDateString()}</td>
                       <td>{transaction.type}</td>
                       <td className={transaction.amount < 0 ? 'text-error' : 'text-success'}>
-                        ${Math.abs(transaction.amount).toLocaleString()}
+                        {formatCurrency(Math.abs(transaction.amount))}
                       </td>
-                      <td className={getStatusColor(transaction.status)}>{transaction.status}</td>
+                      <td className={getStatusColor(transaction.status)}>
+                        {transaction.status}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -254,18 +421,35 @@ const Page = () => {
         <dialog id="fraud_modal" className="modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg text-primary">Report Suspicious Activity</h3>
+            {selectedClient && (
+              <div className="my-4">
+                <p className="font-medium">Client: {selectedClient.name}</p>
+                <p className="text-sm text-base-content/70">Account: {selectedClient.accountNumber}</p>
+              </div>
+            )}
             <div className="alert alert-error mt-4">
               <AlertTriangle className="h-4 w-4" />
               <div>
                 <h4 className="font-bold">Important Notice</h4>
                 <p className="text-sm">
                   This will flag the account for immediate review by our compliance team.
+                  Please ensure you have sufficient evidence before proceeding.
                 </p>
               </div>
             </div>
+            <div className="form-control mt-4">
+              <label className="label">
+                <span className="label-text">Reason for Report</span>
+              </label>
+              <textarea 
+                className="textarea textarea-bordered h-24" 
+                placeholder="Describe the suspicious activity..."
+              ></textarea>
+            </div>
             <div className="modal-action">
-              <form method="dialog">
-                <button className="btn btn-error">Close</button>
+              <form method="dialog" className="flex gap-2">
+                <button className="btn btn-ghost">Cancel</button>
+                <button className="btn btn-error">Submit Report</button>
               </form>
             </div>
           </div>
@@ -281,3 +465,4 @@ const Page = () => {
 };
 
 export default Page;
+          
