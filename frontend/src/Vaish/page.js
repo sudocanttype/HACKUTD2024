@@ -12,7 +12,26 @@ function addCommas(number){
 }
 
 const VaishPage = () => {
+  const [depositAmounStore, setDepositAmountStore] = useState(""); // For deposit amount
+  const [uploadedImage, setUploadedImage] = useState(null); // For uploaded image
+    
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", dollars: "" });
 
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const email = event.target.email.value;
+    const dollars = event.target.dollars.value;
+
+    // Store the data in the state
+    setFormData({ email, dollars });
+
+    // Optionally, log the data or send it to an API
+    console.log("Stored Data:", { email, dollars });
+
+    // Close the modal if needed
+    document.getElementById("my_modal_3").close();
+  };
   // State to manage modals
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [imageBase64, setImageBase64] = useState(""); // Store base64 image
@@ -40,8 +59,70 @@ const VaishPage = () => {
 
 
   // Transaction data array with random dates
+<<<<<<< HEAD
 
   console.log(transactions)
+=======
+  const userProfile = {
+    fullName: "Vaishnavi Sharma",
+    email: "vaishnavi.sharma@example.com",
+    address: "123 Tech Park Avenue, Silicon Valley, CA 94025",
+    phone: "(555) 123-4567",
+    accountType: "ClearWay Banking",
+    DOB: "January 2020"
+  };
+  const transactions = [
+    {
+      user_id: "user123",
+      amount: 5000,
+      date: generateRandomDate(),
+      merchant_location: "Grocery Store, Downtown",
+      status: "Completed",
+      type: "Debit",
+    },
+    {
+      user_id: "user123",
+      amount: 1200,
+      date: generateRandomDate(),
+      merchant_location: "Online Shopping, Amazon",
+      status: "Completed",
+      type: "Debit",
+    },
+    {
+      user_id: "user123",
+      amount: 500,
+      date: generateRandomDate(),
+      merchant_location: "Coffee Shop, Central Plaza",
+      status: "Completed",
+      type: "Debit",
+    },
+    {
+      user_id: "user123",
+      amount: 2000,
+      date: generateRandomDate(),
+      merchant_location: "Apartment Complex, Main St.",
+      status: "Completed",
+      type: "Debit",
+    },
+    {
+      user_id: "user123",
+      amount: 1500,
+      date: generateRandomDate(),
+      merchant_location: "Restaurant, Uptown",
+      status: "Completed",
+      type: "Debit",
+    },
+    {
+      user_id: "user123",
+      amount: 1000,
+      date: generateRandomDate(),
+      merchant_location: "Movie Theater, Westside",
+      status: "Completed",
+      type: "Debit",
+    },
+  ];
+
+>>>>>>> origin/frontend
   // State to manage if user wants to see more transactions
   const [showAll, setShowAll] = useState(false);
 
@@ -49,6 +130,7 @@ const VaishPage = () => {
   const toggleShowAll = () => setShowAll(!showAll);
 
   // Handle deposit confirmation
+<<<<<<< HEAD
   const handleDeposit = async () => {
     // Close the modal first
     document.getElementById("my_modal_4").close();
@@ -61,6 +143,26 @@ const VaishPage = () => {
       setShowConfirmation(true);
   
       // Hide the confirmation message after 3 seconds
+=======
+  const handleDeposit = () => {
+    // Close the modal
+    document.getElementById("my_modal_4").close();
+  
+    // Store the contents (deposit amount and uploaded image)
+    const depositData = {
+      amount: depositAmount,
+      image: uploadedImage,
+    };
+  
+    // Log the deposit data or send it to the server
+    console.log("Deposit Data:", depositData);
+  
+    // Optionally, show a confirmation message
+    setTimeout(() => {
+      setShowConfirmation(true);
+  
+      // Hide the confirmation message after 2 seconds
+>>>>>>> origin/frontend
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
@@ -69,18 +171,18 @@ const VaishPage = () => {
       alert("An error occurred while processing your deposit. Please try again.");
     }
   };
+  
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result;
-        setImageBase64(base64String);
-        document.getElementById("uploadedImage").src = base64String;
+        setUploadedImage(reader.result); // Save the base64 image to state
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
   return (
     <AuthWrapper>
@@ -99,12 +201,18 @@ const VaishPage = () => {
                   </a>
                 </li>
                 <li>
-                  <button className="font-bold btn text-white mr-5 bg-indigo-500 hover:bg-indigo-600 rounded-full">
-                    Investment
-                  </button>
+                <button 
+  className="font-bold btn text-white mr-5 bg-indigo-500 hover:bg-indigo-600 rounded-full"
+  onClick={() => navigate('/investment')}
+>
+  Investment
+</button>
                 </li>
                 <li>
-                  <div className="avatar">
+                <div 
+                    className="avatar cursor-pointer"
+                    onClick={() => document.getElementById('profile_modal').showModal()}
+                  >
                     <div className="ring-primary ring-offset-base-100 w-7 rounded-full ring ring-offset-2">
                       <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                     </div>
@@ -114,12 +222,60 @@ const VaishPage = () => {
             </div>
           </div>
         </div>
+        <dialog id="profile_modal" className="modal">
+          <div className="modal-box max-w-2xl">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="avatar">
+                <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">{userProfile.fullName}</h3>
+                <p className="text-indigo-600">{userProfile.accountType}</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Email Address</h4>
+                <p className="text-gray-800">{userProfile.email}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Mailing Address</h4>
+                <p className="text-gray-800">{userProfile.address}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Phone Number</h4>
+                <p className="text-gray-800">{userProfile.phone}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Date of Birth</h4>
+                <p className="text-gray-800">{userProfile.DOB}</p>
+              </div>
+            </div>
+
+        
+          </div>
+        </dialog>
 
         <div className="mx-10 my-36">
           <div className="flex justify-between items-center my-5">
+<<<<<<< HEAD
             <div className="w-1/2">
               <h1 className="text-4xl font-semibold text-gray-800">
                 Welcome, {(user == null) ? "" : user.name}.
+=======
+            <div className="w-1/2 mx-5">
+              <h1 className="text-4xl  font-semibold text-gray-800">
+                Welcome, Vaishnavi
+>>>>>>> origin/frontend
               </h1>
               <p className="text-lg text-gray-600 mt-2">
                 Here's your financial overview:
@@ -150,92 +306,137 @@ const VaishPage = () => {
               >
                 Nelle
               </button>
+
               <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
-                  <form method="dialog">
-                    {/* if there is a button in form, it will close the modal */}
+                  <form onSubmit={handleSubmit}>
+                    {/* Close button */}
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                       ✕
                     </button>
+                    <h3 className="font-bold text-lg">Nelle</h3>
+                    <p className="py-4">Send money to people you know</p>
+
+                    {/* Email input */}
+                    <label
+                      className="block mb-2 text-sm font-medium"
+                      htmlFor="email"
+                    >
+                      Email:
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="input input-bordered w-full mb-4"
+                      placeholder="Enter your email"
+                      required
+                    />
+
+                    {/* Dollar input */}
+                    <label
+                      className="block mb-2 text-sm font-medium"
+                      htmlFor="dollars"
+                    >
+                      Amount in dollars:
+                    </label>
+                    <input
+                      type="number"
+                      id="dollars"
+                      name="dollars"
+                      className="input input-bordered w-full mb-4"
+                      placeholder="Enter the amount"
+                      min="1"
+                      required
+                    />
+
+                    {/* Send button */}
+                    <button
+                      className="btn btn-primary w-full mt-4"
+                      type="submit"
+                    >
+                      Send
+                    </button>
                   </form>
-                  <h3 className="font-bold text-lg">Hello!</h3>
-                  <p className="py-4">
-                    Press ESC key or click on ✕ button to close
-                  </p>
                 </div>
               </dialog>
 
               <dialog id="my_modal_4" className="modal">
-                <div className="modal-box w-11/12 max-w-5xl">
-                  <form method="dialog">
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                      ✕
-                    </button>
-                  </form>
-                  <h3 className="font-bold text-lg">Upload Check</h3>
-                  <p className="py-4">
-                    Enter deposit amount and upload check image:
-                  </p>
+  <div className="modal-box w-11/12 max-w-5xl">
+    <form method="dialog">
+      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+        ✕
+      </button>
+    </form>
+    <h3 className="font-bold text-lg">Upload Check</h3>
+    <p className="py-4">Enter deposit amount and upload check image:</p>
 
-                  {/* Deposit Amount Input */}
-                  <div className="mb-6">
-                    <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                      htmlFor="depositAmount"
-                    >
-                      Deposit Amount ($)
-                    </label>
-                    <input
-                      type="number"
-                      id="depositAmount"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      placeholder="Enter amount"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
+    {/* Deposit Amount Input */}
+    <div className="mb-6">
+      <label
+        className="block text-gray-700 text-sm font-bold mb-2"
+        htmlFor="depositAmount"
+      >
+        Deposit Amount ($)
+      </label>
+      <input
+        type="number"
+        id="depositAmount"
+        value={depositAmount}
+        onChange={(e) => setDepositAmount(e.target.value)}
+        className="input input-bordered w-full max-w-xs"
+        placeholder="Enter amount"
+        min="0"
+        step="0.01"
+      />
+    </div>
 
-                  <div className="flex flex-col items-center">
-                    <label
-                      htmlFor="fileUpload"
-                      className="flex flex-col items-center cursor-pointer p-6 bg-indigo-100 rounded-lg shadow-md hover:bg-indigo-200 transition-colors duration-300"
-                    >
-                      <div className="bg-white p-5 rounded-full shadow-lg">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          className="w-12 h-12 text-indigo-600"
-                        >
-                          <path d="M12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6ZM12 14C8.13401 14 5 17.134 5 20H19C19 17.134 15.866 14 12 14Z"></path>
-                        </svg>
-                      </div>
-                      <div className="mt-4 text-indigo-600 font-medium">
-                        <span>Click or Drag to Upload Check</span>
-                      </div>
-                      <input
-                        id="fileUpload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
-                    <img
-                      id="uploadedImage"
-                      src=""
-                      alt="Uploaded Preview"
-                      className="max-w-full h-auto mt-4 rounded-lg shadow-md border max-h-[00px] overflow-auto"
-                    />
-                  </div>
-                  <button className="btn mt-4" onClick={handleDeposit}>
-                    Deposit Check
-                  </button>
-                </div>
-              </dialog>
+    <div className="flex flex-col items-center">
+      <label
+        htmlFor="fileUpload"
+        className="flex flex-col items-center cursor-pointer p-6 bg-indigo-100 rounded-lg shadow-md hover:bg-indigo-200 transition-colors duration-300"
+      >
+        <div className="bg-white p-5 rounded-full shadow-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            className="w-12 h-12 text-indigo-600"
+          >
+            <path d="M12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6ZM12 14C8.13401 14 5 17.134 5 20H19C19 17.134 15.866 14 12 14Z"></path>
+          </svg>
+        </div>
+        <div className="mt-4 text-indigo-600 font-medium">
+          <span>Click or Drag to Upload Check</span>
+        </div>
+        <input
+          id="fileUpload"
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
+      </label>
+      
+      {/* Image Preview */}
+      {uploadedImage && (
+        <img
+          id="uploadedImage"
+          src={uploadedImage}
+          alt="Uploaded Preview"
+          className="max-w-full h-auto mt-4 rounded-lg shadow-md border max-h-[300px] overflow-auto"
+        />
+      )}
+    </div>
+
+    <button className="btn mt-4" onClick={handleDeposit}>
+      Deposit Check
+    </button>
+  </div>
+</dialog>
+        
+                   
 
               {/* Confirmation Modal */}
               {showConfirmation && (
@@ -255,7 +456,7 @@ const VaishPage = () => {
             </div>
 
             <div
-              className="card w-2/5 bg-white shadow-lg cursor-pointer max-h-[400px] overflow-y-auto"
+              className="card w-2/5  bg-white shadow-lg cursor-pointer max-h-[400px] overflow-y-auto"
               onClick={toggleShowAll}
             >
               <div className="card-body">
@@ -308,7 +509,7 @@ const VaishPage = () => {
           </div>
         </div>
 
-        <div className="mx-36 bg-gray-50 rounded-2xl p-20">
+        <div className="mx-36 bg-gray-50 rounded-2xl p-20 shadow-lg shadow-stone-300">
           <h2 className="text-3xl font-semibold text-gray-800 mb-6">
             Bank Statements
           </h2>
