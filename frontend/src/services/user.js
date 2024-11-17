@@ -1,5 +1,10 @@
 import apiClient from "./api";
 
+export const isUserEmployee = async (email) =>{
+    const response = await apiClient.get(`/users/is_employee/`, {params: {email}});
+    return response.data['data']['is_employee'];
+}
+
 export const getUser = async (id) => {
     try {
         const response = await apiClient.get(`/users/${id}`);
