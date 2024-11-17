@@ -39,12 +39,16 @@ const VaishPage = () => {
   const [depositAmount, setDepositAmount] = useState(""); // Store deposit amount
   const [transactions, setTransactions] = useState([])
   const [user, setUser] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
 
   const { user: current_user, isLoading } = useAuth0();
 
     useEffect(() => {
         if (!isLoading) {
             // Wait until `isLoading` is false
+
+
+
             const fetchUserData = async () => {
                 try {
                     const fetchedUser = await getUserByEmail(current_user.email);
@@ -139,7 +143,7 @@ const VaishPage = () => {
                     onClick={() => document.getElementById('profile_modal').showModal()}
                   >
                     <div className="ring-primary ring-offset-base-100 w-7 rounded-full ring ring-offset-2">
-                      <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                      <img src={current_user && current_user.picture ? current_user.picture : "/qmark.jpg"} />
                     </div>
                   </div>
                 </li>
@@ -157,7 +161,7 @@ const VaishPage = () => {
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="avatar">
                     <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                      <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                      <img src={current_user && current_user.picture ? current_user.picture : "/qmark.jpg"}/>
                     </div>
                   </div>
                   <div>
@@ -232,8 +236,8 @@ const VaishPage = () => {
               </button>
 
               <dialog id="my_modal_3" className="modal">
-                <div className="modal-box">
-                  <form onSubmit={handleSubmit}>
+                <div method="dialog" className="modal-box">
+                  <form onSubmit={handleSubmit} >
                     {/* Close button */}
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                       ✕
