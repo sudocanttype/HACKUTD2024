@@ -5,8 +5,8 @@ import getTransactions from "../services/transaction.js";
 import { getPendingChecks } from '../services/deposit_check';
 
 function formatSource(b64){
-  // return b64;
-  return `data:image/png;base64,${b64}`
+  return b64;
+  // return `data:image/png;base64,${b64}`
 }
 
 const Page = () => {
