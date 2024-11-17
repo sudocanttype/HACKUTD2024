@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Map from "./maps";
 // Helper function to generate random dates for the transactions
 const generateRandomDate = () => {
   const start = new Date(2023, 0, 1); // January 1st, 2023
@@ -11,7 +11,9 @@ const generateRandomDate = () => {
   return randomDate.toLocaleDateString();
 };
 
+
 const VaishPage = () => {
+ 
   const [depositAmounStore, setDepositAmountStore] = useState(""); // For deposit amount
   const [uploadedImage, setUploadedImage] = useState(null); // For uploaded image
 
@@ -298,7 +300,7 @@ const VaishPage = () => {
   </div>
 </dialog>
 
-        <div className="mx-10 my-36">
+        <div className="mx-10 my-44">
           <div className="flex justify-between items-center my-5">
             <div className="w-1/2 mx-5">
               <h1 className="text-4xl  font-semibold text-gray-800">
@@ -535,8 +537,9 @@ const VaishPage = () => {
             </div>
           </div>
         </div>
+     <Map/>
 
-        <div className="mx-36 bg-gray-50 rounded-2xl p-20 shadow-lg shadow-stone-300">
+        <div className="mx-36 bg-white rounded-2xl p-20 shadow-lg shadow-stone-300">
           <h2 className="text-3xl font-semibold text-gray-800 mb-6">
             Bank Statements
           </h2>
@@ -619,8 +622,7 @@ const VaishPage = () => {
       <footer className="my-10 footer footer-center text-base-content p-4">
         <aside>
           <p>
-            Copyright © {new Date().getFullYear()} - All right reserved by ACME
-            Industries Ltd
+          Privacy Policy | Terms of Service | Copyright © 2024 ClearWay
           </p>
         </aside>
       </footer>

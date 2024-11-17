@@ -30,7 +30,7 @@ function LoginPage() {
     if (email === "Vaish@g") {
       navigate('/Vaish/page'); // Navigate to Vaish's page
     } else if (email === "Sahas@g") {
-      navigate('/CreateAcc'); // Navigate to Sahas's page
+      navigate('/Sahas/page'); // Navigate to Sahas's page
     } else {
       alert('Invalid username or password');
     }
