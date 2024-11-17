@@ -6,7 +6,7 @@ import SahasPage from './Sahas/page'; // Import SahasPage component
 import Callback from './Callback/page';
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import CreateAcc from "./CreateAcc/page";
-
+import Investment from "./Investment/page"
 function App() {
   return (
     <Auth0Provider
@@ -27,6 +27,7 @@ function App() {
           <Route path="/employee" element={<SahasPage />} /> {/* Route for Sahas's page */}
           <Route path="/callback" element={<Callback />} />
           <Route path="/customer/signup" element = {<CreateAcc />} />
+          <Route path="/investment" element = {<Investment />} />
         </Routes>
       </Router>
     </Auth0Provider>

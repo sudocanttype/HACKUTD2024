@@ -224,7 +224,7 @@ const DigitalInvestmentPage = () => {
           <div className="flex-1">
             <a
               className="btn btn-ghost text-xl text-white"
-              onClick={() => navigate("/Vaish/page")}
+              onClick={() => navigate("/customer")}
             >
               ClearWay
             </a>
