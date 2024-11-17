@@ -55,6 +55,18 @@ export const createUser = async (userData) => {
             throw new Error(error.response.data.message);
         }
         // Re-throw other errors
+    }
+};
+export const getAllUsers = async () => {
+    try {
+        const response = await apiClient.get(`/users`);
+        return response.data['users'];
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            // Explicitly return null for 404 errors
+            return null;
+        }
+        // Re-throw other errors or handle them differently if needed
         console.error(error);
         throw error;
     }

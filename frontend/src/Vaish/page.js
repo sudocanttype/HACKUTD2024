@@ -53,6 +53,7 @@ const VaishPage = () => {
   const [imageBase64, setImageBase64] = useState(""); // Store base64 image
   const [depositAmount, setDepositAmount] = useState(""); // Store deposit amount
   const [transactions, setTransactions] = useState([])
+  const [userProfile, setUserProfile] = useState(null);
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState(null);
   const [nelleError, setNelleError] = useState(null); // For Nelle error messages
@@ -86,9 +87,7 @@ const VaishPage = () => {
         }
     }, [isLoading, current_user]);
 
-  // Transaction data array with random dates
 
-  console.log(transactions)
   // State to manage if user wants to see more transactions
   const [showAll, setShowAll] = useState(false);
 
