@@ -1,11 +1,50 @@
 import React, { useState, useRef } from 'react';
-import { ArrowUpDown, AlertTriangle, FileText, Search } from 'lucide-react';
+import { ArrowUpDown, AlertTriangle, FileText, Search, CheckCircle, XCircle } from 'lucide-react';
 
 const Page = () => {
   const userName = 'Sahas Sharma';
   const assetsManaged = '$1.2 Billion';
   const activeClients = 350;
+  
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
 
+  const pendingChecks = [
+    {
+      id: 1,
+      clientName: "Lloyd Blankfein",
+      accountNumber: "8472-9123",
+      amount: 25000,
+      dateReceived: "2024-03-17",
+      imageUrl: "/api/placeholder/400/200"
+    },
+    {
+      id: 2,
+      clientName: "David Solomon",
+      accountNumber: "8472-9124",
+      amount: 15000,
+      dateReceived: "2024-03-17",
+      imageUrl: "/api/placeholder/400/200"
+    }
+  ];
+
+  const [selectedCheck, setSelectedCheck] = useState(null);
+
+  const openCheckModal = () => {
+    setSelectedCheck(pendingChecks[0]); // For demo
+    document.getElementById('check_modal').showModal();
+  };
+
+  const handleCheckDecision = (approved) => {
+    console.log(`Check ${selectedCheck.id} was ${approved ? 'approved' : 'denied'}`);
+    document.getElementById('check_modal').close();
+  };
+
+  // Complete mock 
   const clients = [
     {
       id: 1,
@@ -129,6 +168,7 @@ const Page = () => {
     }
   ];
 
+  // Mock transaction data for each client
   const clientTransactions = {
     '8472-9123': [
       { id: 1, date: '2024-03-15', amount: 50000, type: 'Deposit', status: 'Completed' },
@@ -255,6 +295,7 @@ const Page = () => {
     }).format(amount);
   };
 
+
   React.useEffect(() => {
     setSearchResults(clients);
     setShowResults(true);
@@ -262,20 +303,32 @@ const Page = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex-grow p-5 bg-gradient-to-b from-primary/30 to-base-100">
-        {/* Navbar */}
-        <div className="navbar bg-primary rounded-box shadow-lg">
+      <div className="flex-grow p-5 bg-gradient-to-b from-primary/50 to-base-100">
+        {/* Navbar - moved to top */}
+        <div className="navbar bg-primary rounded-box shadow-lg mb-6">
           <div className="flex items-center justify-between w-full px-4">
             <a className="btn btn-ghost text-xl text-base-100">ClearWay</a>
             <div className="flex space-x-2">
               <button className="btn btn-ghost text-base-100">Dashboard</button>
               <button className="btn btn-ghost text-base-100">Clients</button>
               <button className="btn btn-ghost text-base-100">Reports</button>
-              <button className="btn btn-ghost text-base-100">Check Validation</button>
+              <button 
+                className="btn btn-ghost text-base-100"
+                onClick={openCheckModal}
+              >
+                Check Validation
+              </button>
             </div>
           </div>
         </div>
 
+        {/* Welcome Banner - moved below navbar */}
+        <div className="mb-6 p-4 bg-base-100 rounded-box shadow-lg">
+          <h1 className="text-2xl font-bold text-primary">Welcome Back, {userName}</h1>
+          <p className="text-base-content/80 mt-1">
+            {getGreeting()}. Lovely weather today.
+          </p>
+        </div>
         {/* Portfolio Summary */}
         <div className="card bg-base-100 shadow-xl my-6 mx-4">
           <div className="card-body">
@@ -455,6 +508,89 @@ const Page = () => {
           </div>
         </dialog>
       </div>
+      {/* Add Check Detection Modal */}
+      <dialog id="check_modal" className="modal">
+          <div className="modal-box w-11/12 max-w-5xl">
+            <h3 className="font-bold text-xl text-primary mb-4">Check Validation</h3>
+            
+            {selectedCheck && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <p><strong>Client:</strong> {selectedCheck.clientName}</p>
+                    <p><strong>Account:</strong> {selectedCheck.accountNumber}</p>
+                    <p><strong>Amount:</strong> {formatCurrency(selectedCheck.amount)}</p>
+                    <p><strong>Date Received:</strong> {new Date(selectedCheck.dateReceived).toLocaleDateString()}</p>
+                  </div>
+                  <div className="border rounded-lg p-4 bg-base-200">
+                    <img
+                      src={selectedCheck.imageUrl}
+                      alt="Check"
+                      className="w-full h-auto rounded"
+                    />
+                  </div>
+                </div>
+
+                <div className="alert alert-info">
+                  <p className="text-sm">
+                    Please verify the check details, signature, and amount before approval.
+                  </p>
+                </div>
+
+                <div className="flex justify-end gap-4">
+                  <button 
+                    onClick={() => handleCheckDecision(false)}
+                    className="btn btn-error gap-2"
+                  >
+                    <XCircle className="h-4 w-4" />
+                    Deny Check
+                  </button>
+                  <button 
+                    onClick={() => handleCheckDecision(true)}
+                    className="btn btn-success gap-2"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    Approve Check
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6">
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Client</th>
+                      <th>Account</th>
+                      <th>Amount</th>
+                      <th>Date Received</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingChecks.map(check => (
+                      <tr key={check.id} className="hover:bg-base-200 cursor-pointer" onClick={() => setSelectedCheck(check)}>
+                        <td>{check.clientName}</td>
+                        <td>{check.accountNumber}</td>
+                        <td>{formatCurrency(check.amount)}</td>
+                        <td>{new Date(check.dateReceived).toLocaleDateString()}</td>
+                        <td><span className="badge badge-warning">Pending</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="modal-action">
+              <form method="dialog">
+                <button className="btn btn-ghost">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+
 
       {/* Footer */}
       <footer className="footer footer-center p-4 bg-base-100 text-base-content border-t">
