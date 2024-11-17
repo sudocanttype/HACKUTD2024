@@ -144,214 +144,223 @@ const Page = () => {
 
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-grow p-5 bg-gradient-to-b from-primary/50 to-base-100">
-        {/* Navbar - moved to top */}
-        <div className="navbar bg-primary rounded-box shadow-lg mb-6">
-          <div className="flex items-center justify-between w-full px-4">
-            <a className="btn btn-ghost text-xl text-base-100">ClearWay</a>
-            <div className="flex space-x-2">
-              <button className="btn btn-ghost text-base-100">Dashboard</button>
-              <button className="btn btn-ghost text-base-100">Clients</button>
-              <button className="btn btn-ghost text-base-100">Reports</button>
-              <button 
-                className="btn btn-ghost text-base-100"
-                onClick={openCheckModal}
-              >
-                Check Validation
-              </button>
-            </div>
-          </div>
+<div className="min-h-screen flex flex-col">
+  <div className="flex-grow p-6 bg-indigo-50">
+    {/* Navbar */}
+    <div className="navbar bg-indigo-600 rounded-box shadow-lg mb-6">
+      <div className="flex items-center justify-between w-full px-4">
+        <a className="btn btn-ghost text-xl text-white">ClearWay</a>
+        <div className="flex space-x-2">
+          <button className="btn btn-ghost text-white">Dashboard</button>
+          <button className="btn btn-ghost text-white">Clients</button>
+          <button className="btn btn-ghost text-white">Reports</button>
+          <button
+            className="btn btn-ghost text-white"
+            onClick={openCheckModal}
+          >
+            Check Validation
+          </button>
         </div>
+      </div>
+    </div>
 
-        {/* Welcome Banner - moved below navbar */}
-        <div className="mb-6 p-4 bg-base-100 rounded-box shadow-lg">
-          <h1 className="text-2xl font-bold text-primary">Welcome Back, {userName}</h1>
-          <p className="text-base-content/80 mt-1">
-            {getGreeting()}. Lovely weather today.
-          </p>
+    {/* Welcome Banner */}
+    <div className="mb-6 mx-4 p-4 bg-white rounded-box shadow-lg">
+      <h1 className="text-2xl font-bold text-indigo-600">Welcome Back, {userName}</h1>
+      <p className="text-gray-600 mt-1">
+        {getGreeting()}. Lovely weather today.
+      </p>
+    </div>
+
+    {/* Portfolio Summary */}
+    <div className="card bg-white shadow-xl my-6 mx-4">
+      <div className="card-body">
+        <h2 className="card-title text-indigo-600">Portfolio Summary</h2>
+        <div className="flex justify-between mt-4">
+          <div>Total Assets Managed:</div>
+          <div className="text-3xl font-semibold text-indigo-600">{assetsManaged}</div>
         </div>
-        {/* Portfolio Summary */}
-        <div className="card bg-base-100 shadow-xl my-6 mx-4">
-          <div className="card-body">
-            <h2 className="card-title text-primary">Portfolio Summary</h2>
-            <div className="flex justify-between mt-4">
-              <div>Total Assets Managed:</div>
-              <div className="text-3xl font-semibold text-primary">{assetsManaged}</div>
-            </div>
-            <div className="flex justify-between mt-4">
-              <div>Active Clients:</div>
-              <div className="text-3xl font-semibold text-primary">{activeClients}</div>
-            </div>
-          </div>
+        <div className="flex justify-between mt-4">
+          <div>Active Clients:</div>
+          <div className="text-3xl font-semibold text-indigo-600">{activeClients}</div>
         </div>
+      </div>
+    </div>
 
-        {/* Search Section */}
-        <div className="mx-4 my-6">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-primary" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search by client name, account number, or email..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="input input-bordered w-full pl-12 focus:input-primary"
-            />
-          </div>
+    {/* Search Section */}
+    <div className="mx-4 my-6">
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <Search className="h-5 w-5 text-indigo-600" />
+        </div>
+        <input
+          type="text"
+          placeholder="Search by client name, account number, or email..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="input input-bordered w-full pl-12 focus:input-indigo-600"
+        />
+      </div>
 
-          {/* Search Results (continuing from showResults &&) */}
-          {showResults && (
-            <div className="mt-4 card bg-base-100 shadow-xl">
-              <div className="card-body p-0">
-                {searchResults.length > 0 ? (
-                  searchResults.map((client) => (
-                    <div key={client.id} className="p-6 border-b border-base-200 last:border-none hover:bg-base-200/50">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-lg text-primary">{client.name}</h3>
-                          <p className="text-base-content/80">Account: {client.id}</p>
-                          <p className="text-base-content/70">{client.email}</p>
-                          <div className="flex gap-2 mt-1">
-                            <span className={`badge ${
-                              client.riskLevel === 'High' ? 'badge-error' : 
-                              client.riskLevel === 'Medium' ? 'badge-warning' : 
-                              'badge-success'
-                            }`}>
-                              {client.riskLevel} Risk
-                            </span>
-                            <span className="badge badge-primary">
-                              {formatCurrency(client.balance)}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => openTransactionModal(client)}
-                            className="btn btn-primary"
-                          >
-                            <FileText className="h-4 w-4 mr-2" />
-                            View Transactions
-                          </button>
-                          <button
-                            onClick={() => openFraudModal(client)}
-                            className="btn btn-error"
-                          >
-                            <AlertTriangle className="h-4 w-4 mr-2" />
-                            Report Suspicious
-                          </button>
-                        </div>
+      {/* Search Results */}
+      {showResults && (
+        <div className="mt-4 card bg-white shadow-xl">
+          <div className="card-body p-0">
+            {searchResults.length > 0 ? (
+              searchResults.map((client) => (
+                <div
+                  key={client.id}
+                  className="p-6 border-b border-gray-200 last:border-none hover:bg-gray-200/50"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg text-indigo-600">{client.name}</h3>
+                      <p className="text-gray-600">Account: {client.accountNumber}</p>
+                      <p className="text-gray-500">{client.email}</p>
+                      <div className="flex gap-2 mt-1">
+                        <span
+                          className={`badge ${
+                            client.riskLevel === 'High'
+                              ? 'badge-error'
+                              : client.riskLevel === 'Medium'
+                              ? 'badge-warning'
+                              : 'badge-success'
+                          }`}
+                        >
+                          {client.riskLevel} Risk
+                        </span>
+                        <span className="badge badge-indigo-600">
+                          {formatCurrency(client.balance)}
+                        </span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="p-6 text-center text-base-content/80">
-                    No clients found matching your search.
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => openTransactionModal(client)}
+                        className="btn btn-primary"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        View Transactions
+                      </button>
+                      <button
+                        onClick={() => openFraudModal(client)}
+                        className="btn btn-error"
+                      >
+                        <AlertTriangle className="h-4 w-4 mr-2" />
+                        Report Suspicious
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Transaction Modal */}
-        <dialog id="transaction_modal" className="modal">
-          <div className="modal-box w-11/12 max-w-5xl">
-            <h3 className="font-bold text-xl text-primary mb-4">
-              {selectedClient && `Transaction History - ${selectedClient.name}`}
-            </h3>
-            
-            <div className="flex gap-4 mb-4">
-              <button 
-                onClick={() => handleSort('date')}
-                className="btn btn-ghost btn-sm"
-              >
-                Sort by Date <ArrowUpDown className="h-4 w-4 ml-2" />
-              </button>
-              <button 
-                onClick={() => handleSort('amount')}
-                className="btn btn-ghost btn-sm"
-              >
-                Sort by Amount <ArrowUpDown className="h-4 w-4 ml-2" />
-              </button>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentTransactions.map((transaction) => (
-                    <tr key={transaction.transaction_id}>
-                      <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                      <td>{transaction.type}</td>
-                      <td className={transaction.amount < 0 ? 'text-error' : 'text-success'}>
-                        {formatCurrency(Math.abs(transaction.amount))}
-                      </td>
-                      <td className={getStatusColor(transaction.status)}>
-                        {transaction.status}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="modal-action">
-              <form method="dialog">
-                <button className="btn btn-primary">Close</button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-
-        {/* Fraud Modal */}
-        <dialog id="fraud_modal" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg text-primary">Report Suspicious Activity</h3>
-            {selectedClient && (
-              <div className="my-4">
-                <p className="font-medium">Client: {selectedClient.name}</p>
-                <p className="text-sm text-base-content/70">Account: {selectedClient.accountNumber}</p>
+                </div>
+              ))
+            ) : (
+              <div className="p-6 text-center text-gray-500">
+                No clients found matching your search.
               </div>
             )}
-            <div className="alert alert-error mt-4">
-              <AlertTriangle className="h-4 w-4" />
-              <div>
-                <h4 className="font-bold">Important Notice</h4>
-                <p className="text-sm">
-                  This will flag the account for immediate review by our compliance team.
-                  Please ensure you have sufficient evidence before proceeding.
-                </p>
-              </div>
-            </div>
-            <div className="form-control mt-4">
-              <label className="label">
-                <span className="label-text">Reason for Report</span>
-              </label>
-              <textarea 
-                className="textarea textarea-bordered h-24" 
-                placeholder="Describe the suspicious activity..."
-              ></textarea>
-            </div>
-            <div className="modal-action">
-              <form method="dialog" className="flex gap-2">
-                <button className="btn btn-ghost">Cancel</button>
-                <button className="btn btn-error">Submit Report</button>
-              </form>
-            </div>
           </div>
-        </dialog>
+        </div>
+      )}
+    </div>
+
+    {/* Transaction Modal */}
+    <dialog id="transaction_modal" className="modal">
+      <div className="modal-box w-11/12 max-w-5xl">
+        <h3 className="font-bold text-xl text-indigo-600 mb-4">
+          {selectedClient && `Transaction History - ${selectedClient.name}`}
+        </h3>
+
+        <div className="flex gap-4 mb-4">
+          <button
+            onClick={() => handleSort('date')}
+            className="btn btn-ghost btn-sm"
+          >
+            Sort by Date <ArrowUpDown className="h-4 w-4 ml-2" />
+          </button>
+          <button
+            onClick={() => handleSort('amount')}
+            className="btn btn-ghost btn-sm"
+          >
+            Sort by Amount <ArrowUpDown className="h-4 w-4 ml-2" />
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentTransactions.map((transaction) => (
+                <tr key={transaction.id}>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                  <td>{transaction.type}</td>
+                  <td
+                    className={transaction.amount < 0 ? 'text-error' : 'text-success'}
+                  >
+                    {formatCurrency(Math.abs(transaction.amount))}
+                  </td>
+                  <td className={getStatusColor(transaction.status)}>
+                    {transaction.status}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn btn-indigo-600">Close</button>
+          </form>
+        </div>
       </div>
-      {/* Add Check Detection Modal */}
-      <dialog id="check_modal" className="modal">
+    </dialog>
+
+    {/* Fraud Modal */}
+    <dialog id="fraud_modal" className="modal">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg text-indigo-600">Report Suspicious Activity</h3>
+        {selectedClient && (
+          <div className="my-4">
+            <p className="font-medium">Client: {selectedClient.name}</p>
+            <p className="text-sm text-gray-500">Account: {selectedClient.accountNumber}</p>
+          </div>
+        )}
+        <div className="alert alert-error mt-4">
+          <AlertTriangle className="h-4 w-4" />
+          <div>
+            <h4 className="font-bold">Important Notice</h4>
+            <p className="text-sm">
+              This will flag the account for immediate review by our compliance team.
+              Please ensure you have sufficient evidence before proceeding.
+            </p>
+          </div>
+        </div>
+        <div className="form-control mt-4">
+          <label className="label">
+            <span className="label-text">Reason for Report</span>
+          </label>
+          <textarea
+            className="textarea textarea-bordered h-24"
+            placeholder="Describe the suspicious activity..."
+          ></textarea>
+        </div>
+        <div className="modal-action">
+          <form method="dialog" className="flex gap-2">
+            <button className="btn btn-ghost">Cancel</button>
+            <button className="btn btn-error">Submit Report</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="check_modal" className="modal">
           <div className="modal-box w-11/12 max-w-5xl">
             <h3 className="font-bold text-xl text-primary mb-4">Check Validation</h3>
             
@@ -434,11 +443,15 @@ const Page = () => {
         </dialog>
 
 
-      {/* Footer */}
-      <footer className="footer footer-center p-4 bg-base-100 text-base-content border-t">
-        <p>Privacy Policy | Terms of Service | Copyright © 2024 ClearWay</p>
-      </footer>
-    </div>
+ 
+  </div>
+     {/* Footer */}
+     <footer className="footer footer-center p-4 bg-white text-gray-600  ">
+      <p>Privacy Policy | Terms of Service | Copyright © 2024 ClearWay</p>
+    </footer>
+</div>
+
+
   );
 };
 
