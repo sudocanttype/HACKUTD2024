@@ -31,3 +31,23 @@ export async function getPendingChecks() {
     throw error;
   }
 }
+export async function approveCheck(check_id) {
+  try {
+    const response = await apiClient.get('/approve_check/'+check_id, {
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating check deposit:', error.response?.data || error.message);
+    throw error;
+  }
+}
+export async function removeCheck(check_id) {
+  try {
+    const response = await apiClient.get('/cancel_check/'+check_id, {
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating check deposit:', error.response?.data || error.message);
+    throw error;
+  }
+}
