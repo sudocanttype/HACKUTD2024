@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import './App.css';
 import VaishPage from './Vaish/page'; // Import VaishPage component
 import SahasPage from './Sahas/page'; // Import SahasPage component
-import CreateAcc from './CreateAcc/page';
+import InvestmentPage from './Investment/page';
 
 function App() {
   return (
@@ -12,7 +12,8 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Vaish/page" element={<VaishPage />} /> {/* Route for Vaish's page */}
         <Route path="/Sahas/page" element={<SahasPage />} /> {/* Route for Sahas's page */}
-        <Route path="/CreateAcc" element={<CreateAcc/>} />
+        <Route path="/investment" element={<InvestmentPage />} />
+
 
       </Routes>
     </Router>

@@ -38,7 +38,14 @@ const VaishPage = () => {
   const [depositAmount, setDepositAmount] = useState(""); // Store deposit amount
 
   // Transaction data array with random dates
-
+  const userProfile = {
+    fullName: "Vaishnavi Sharma",
+    email: "vaishnavi.sharma@example.com",
+    address: "123 Tech Park Avenue, Silicon Valley, CA 94025",
+    phone: "(555) 123-4567",
+    accountType: "ClearWay Banking",
+    DOB: "January 2020"
+  };
   const transactions = [
     {
       user_id: "user123",
@@ -149,12 +156,18 @@ const VaishPage = () => {
                   </a>
                 </li>
                 <li>
-                  <button className="font-bold btn text-white mr-5 bg-indigo-500 hover:bg-indigo-600 rounded-full">
-                    Investment
-                  </button>
+                <button 
+  className="font-bold btn text-white mr-5 bg-indigo-500 hover:bg-indigo-600 rounded-full"
+  onClick={() => navigate('/investment')}
+>
+  Investment
+</button>
                 </li>
                 <li>
-                  <div className="avatar">
+                <div 
+                    className="avatar cursor-pointer"
+                    onClick={() => document.getElementById('profile_modal').showModal()}
+                  >
                     <div className="ring-primary ring-offset-base-100 w-7 rounded-full ring ring-offset-2">
                       <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                     </div>
@@ -164,11 +177,53 @@ const VaishPage = () => {
             </div>
           </div>
         </div>
+        <dialog id="profile_modal" className="modal">
+          <div className="modal-box max-w-2xl">
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="avatar">
+                <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800">{userProfile.fullName}</h3>
+                <p className="text-indigo-600">{userProfile.accountType}</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Email Address</h4>
+                <p className="text-gray-800">{userProfile.email}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Mailing Address</h4>
+                <p className="text-gray-800">{userProfile.address}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Phone Number</h4>
+                <p className="text-gray-800">{userProfile.phone}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-semibold text-gray-600 mb-2">Date of Birth</h4>
+                <p className="text-gray-800">{userProfile.DOB}</p>
+              </div>
+            </div>
+
+        
+          </div>
+        </dialog>
 
         <div className="mx-10 my-36">
           <div className="flex justify-between items-center my-5">
-            <div className="w-1/2">
-              <h1 className="text-4xl font-semibold text-gray-800">
+            <div className="w-1/2 mx-5">
+              <h1 className="text-4xl  font-semibold text-gray-800">
                 Welcome, Vaishnavi
               </h1>
               <p className="text-lg text-gray-600 mt-2">
@@ -350,7 +405,7 @@ const VaishPage = () => {
             </div>
 
             <div
-              className="card w-2/5 bg-white shadow-lg cursor-pointer max-h-[400px] overflow-y-auto"
+              className="card w-2/5  bg-white shadow-lg cursor-pointer max-h-[400px] overflow-y-auto"
               onClick={toggleShowAll}
             >
               <div className="card-body">
@@ -403,7 +458,7 @@ const VaishPage = () => {
           </div>
         </div>
 
-        <div className="mx-36 bg-gray-50 rounded-2xl p-20">
+        <div className="mx-36 bg-gray-50 rounded-2xl p-20 shadow-lg shadow-stone-300">
           <h2 className="text-3xl font-semibold text-gray-800 mb-6">
             Bank Statements
           </h2>
