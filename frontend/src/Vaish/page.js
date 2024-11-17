@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AuthWrapper from "../components/authwrapper";
 
 // Helper function to generate random dates for the transactions
 const generateRandomDate = () => {
@@ -10,6 +11,7 @@ const generateRandomDate = () => {
   );
   return randomDate.toLocaleDateString();
 };
+
 
 const VaishPage = () => {
   const navigate = useNavigate();
@@ -107,6 +109,7 @@ const VaishPage = () => {
   };
 
   return (
+    <AuthWrapper>
     <>
       <div className="p-5 pb-32 bg-indigo-50">
         <div className="fixed top-0 left-0 right-0 z-50 px-5 pt-3 bg-indigo-50">
@@ -420,6 +423,7 @@ const VaishPage = () => {
         </aside>
       </footer>
     </>
+    </AuthWrapper>
   );
 };
 

@@ -3,16 +3,31 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import './App.css';
 import VaishPage from './Vaish/page'; // Import VaishPage component
 import SahasPage from './Sahas/page'; // Import SahasPage component
+import Callback from './Callback/page';
+import { Auth0Provider } from '@auth0/auth0-react';
 
 function App() {
   return (
-    <Router> {/* Wrap the entire app with Router */}
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/Vaish/page" element={<VaishPage />} /> {/* Route for Vaish's page */}
-        <Route path="/Sahas/page" element={<SahasPage />} /> {/* Route for Sahas's page */}
-      </Routes>
-    </Router>
+    <Auth0Provider
+      domain='dev-uxvqv76aqmsy3fyj.us.auth0.com'
+      clientId='GsemPsspJAiSO2PDgWX07dhXgI3OG0vT'
+      cacheLocation='localstorage'
+      authorizationParams={
+        {
+          audience:'clearway',
+          redirect_uri: 'http://localhost:3000/callback'
+        }
+      }
+    >
+      <Router> {/* Wrap the entire app with Router */}
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/customer" element={<VaishPage />} /> {/* Route for Vaish's page */}
+          <Route path="/employee" element={<SahasPage />} /> {/* Route for Sahas's page */}
+          <Route path="/callback" element={<Callback />} />
+        </Routes>
+      </Router>
+    </Auth0Provider>
   );
 }
 
