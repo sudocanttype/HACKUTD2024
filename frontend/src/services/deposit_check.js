@@ -21,3 +21,13 @@ export async function createCheckDeposit(userId, imageBase64, amount) {
     throw error;
   }
 }
+export async function getPendingChecks() {
+  try {
+    const response = await apiClient.get('/get_p_check_deposits', {
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating check deposit:', error.response?.data || error.message);
+    throw error;
+  }
+}

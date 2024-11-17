@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect} from 'react';
-import { ArrowUpDown, AlertTriangle, FileText, Search } from 'lucide-react';
 import { ArrowUpDown, AlertTriangle, FileText, Search, CheckCircle, XCircle } from 'lucide-react';
 import { getAllUsers } from '../services/user';
 import getTransactions from "../services/transaction.js";
+import { getPendingChecks } from '../services/deposit_check';
 
 const Page = () => {
   const userName = 'Sahas Sharma';
@@ -16,24 +16,7 @@ const Page = () => {
     return 'Good Evening';
   };
 
-  const pendingChecks = [
-    {
-      id: 1,
-      clientName: "Lloyd Blankfein",
-      accountNumber: "8472-9123",
-      amount: 25000,
-      dateReceived: "2024-03-17",
-      imageUrl: "/api/placeholder/400/200"
-    },
-    {
-      id: 2,
-      clientName: "David Solomon",
-      accountNumber: "8472-9124",
-      amount: 15000,
-      dateReceived: "2024-03-17",
-      imageUrl: "/api/placeholder/400/200"
-    }
-  ];
+  const [pendingChecks, setPendingChecks] = useState([])
 
   const [selectedCheck, setSelectedCheck] = useState(null);
 
@@ -46,131 +29,9 @@ const Page = () => {
     console.log(`Check ${selectedCheck.id} was ${approved ? 'approved' : 'denied'}`);
     document.getElementById('check_modal').close();
   };
+  const [clients, setClients] = useState([])
 
   // Complete mock 
-  const clients = [
-    {
-      id: 1,
-      name: "Lloyd Blankfein",
-      accountNumber: "8472-9123",
-      ssn: "555-34-5678",
-      birthday: "1954-09-20",
-      address: "200 West Street, New York, NY, USA",
-      email: "lloyd.blankfein@goldmansachs.com",
-      phone: "212-555-1234",
-      balance: 1778486.33,
-      riskLevel: "Medium"
-    },
-    {
-      id: 2,
-      name: "David Solomon",
-      accountNumber: "8472-9124",
-      ssn: "555-98-1234",
-      birthday: "1962-01-01",
-      address: "200 West Street, New York, NY, USA",
-      email: "david.solomon@goldmansachs.com",
-      phone: "212-555-5678",
-      balance: 2198486.33,
-      riskLevel: "Low"
-    },
-    {
-      id: 3,
-      name: "Henry Paulson",
-      accountNumber: "8472-9125",
-      ssn: "555-22-4352",
-      birthday: "1946-03-28",
-      address: "1775 I Street NW, Washington, D.C., USA",
-      email: "henry.paulson@treasury.gov",
-      phone: "212-555-6789",
-      balance: 1806046.71,
-      riskLevel: "Low"
-    },
-    {
-      id: 4,
-      name: "Gary Cohn",
-      accountNumber: "8472-9126",
-      ssn: "555-32-4951",
-      birthday: "1960-08-25",
-      address: "200 West Street, New York, NY, USA",
-      email: "gary.cohn@goldmansachs.com",
-      phone: "212-555-1122",
-      balance: 3681619.00,
-      riskLevel: "High"
-    },
-    {
-      id: 5,
-      name: "Jim O'Neill",
-      accountNumber: "8472-9127",
-      ssn: "555-43-5012",
-      birthday: "1957-12-04",
-      address: "200 West Street, New York, NY, USA",
-      email: "jim.oneill@goldmansachs.com",
-      phone: "212-555-3344",
-      balance: 5830065.24,
-      riskLevel: "Medium"
-    },
-    {
-      id: 6,
-      name: "Ruth Porat",
-      accountNumber: "8472-9128",
-      ssn: "555-54-6720",
-      birthday: "1957-09-22",
-      address: "200 West Street, New York, NY, USA",
-      email: "ruth.porat@goldmansachs.com",
-      phone: "212-555-5566",
-      balance: 6337625.60,
-      riskLevel: "Low"
-    },
-    {
-      id: 7,
-      name: "Stephen Scherr",
-      accountNumber: "8472-9129",
-      ssn: "555-65-4321",
-      birthday: "1962-06-12",
-      address: "200 West Street, New York, NY, USA",
-      email: "stephen.scherr@goldmansachs.com",
-      phone: "212-555-7788",
-      balance: 3473019.87,
-      riskLevel: "Medium"
-    },
-    {
-      id: 8,
-      name: "Shannon Oshaughnessy",
-      accountNumber: "8472-9130",
-      ssn: "555-76-1542",
-      birthday: "1970-02-15",
-      address: "200 West Street, New York, NY, USA",
-      email: "shannon.oshaughnessy@goldmansachs.com",
-      phone: "212-555-9911",
-      balance: 6303050.37,
-      riskLevel: "High"
-    },
-    {
-      id: 9,
-      name: "Peter Weill",
-      accountNumber: "8472-9131",
-      ssn: "555-85-6789",
-      birthday: "1944-07-03",
-      address: "200 West Street, New York, NY, USA",
-      email: "peter.weill@goldmansachs.com",
-      phone: "212-555-1234",
-      balance: 4421005.06,
-      riskLevel: "Low"
-    },
-    {
-      id: 10,
-      name: "Mark Schwartz",
-      accountNumber: "8472-9132",
-      ssn: "555-12-9876",
-      birthday: "1958-05-21",
-      address: "200 West Street, New York, NY, USA",
-      email: "mark.schwartz@goldmansachs.com",
-      phone: "212-555-4321",
-      balance: 2996634.22,
-      riskLevel: "Medium"
-    }
-  ];
-
   const [users, setusers] = useState([])
   const [transactions, setTransactions] = useState([])
 
@@ -181,13 +42,23 @@ const Page = () => {
     setCurrentTransactions(transactions);
   };
   useEffect(() => {
-    const fetchUsers = async () => {
-      const users = await getAllUsers();
-      setusers(users);
-      console.log(users);
-    };
 
+  const fetchChecks = async () => {
+    const checks = await getPendingChecks();
+    console.log(checks['data']['check_deposits'])
+    setPendingChecks(checks['data']['check_deposits']);
+  };
+  const fetchUsers = async () => {
+    const users = await getAllUsers();
+    setusers(users);
+    console.log(users);
+    setClients(users);
+
+    setSearchResults(clients);
+    setShowResults(true);
+  };
     fetchUsers();
+    fetchChecks();
   }, []);
 
   const openTransactionModal = (client) => {
@@ -266,10 +137,6 @@ const Page = () => {
   };
 
 
-  React.useEffect(() => {
-    setSearchResults(clients);
-    setShowResults(true);
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -339,7 +206,7 @@ const Page = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-semibold text-lg text-primary">{client.name}</h3>
-                          <p className="text-base-content/80">Account: {client.accountNumber}</p>
+                          <p className="text-base-content/80">Account: {client.id}</p>
                           <p className="text-base-content/70">{client.email}</p>
                           <div className="flex gap-2 mt-1">
                             <span className={`badge ${
@@ -487,14 +354,14 @@ const Page = () => {
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <p><strong>Client:</strong> {selectedCheck.clientName}</p>
-                    <p><strong>Account:</strong> {selectedCheck.accountNumber}</p>
-                    <p><strong>Amount:</strong> {formatCurrency(selectedCheck.amount)}</p>
-                    <p><strong>Date Received:</strong> {new Date(selectedCheck.dateReceived).toLocaleDateString()}</p>
+                    <p><strong>Client:</strong> {selectedCheck.user_id.name}</p>
+                    <p><strong>Account:</strong> {selectedCheck.user_id.id}</p>
+                    <p><strong>Amount:</strong> {formatCurrency(selectedCheck.transaction_id.amount)}</p>
+                    <p><strong>Date Received:</strong> {new Date(selectedCheck.transaction_id.date).toLocaleDateString()}</p>
                   </div>
                   <div className="border rounded-lg p-4 bg-base-200">
                     <img
-                      src={selectedCheck.imageUrl}
+                      src={selectedCheck.image_b64}
                       alt="Check"
                       className="w-full h-auto rounded"
                     />
@@ -541,10 +408,10 @@ const Page = () => {
                   <tbody>
                     {pendingChecks.map(check => (
                       <tr key={check.id} className="hover:bg-base-200 cursor-pointer" onClick={() => setSelectedCheck(check)}>
-                        <td>{check.clientName}</td>
-                        <td>{check.accountNumber}</td>
-                        <td>{formatCurrency(check.amount)}</td>
-                        <td>{new Date(check.dateReceived).toLocaleDateString()}</td>
+                        <td>{check.user_id.name}</td>
+                        <td>{check.user_id.id}</td>
+                        <td>{formatCurrency(check.transaction_id.amount)}</td>
+                        <td>{new Date(check.transaction_id.date).toLocaleDateString()}</td>
                         <td><span className="badge badge-warning">Pending</span></td>
                       </tr>
                     ))}
