@@ -1,47 +1,40 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect} from 'react';
 import { ArrowUpDown, AlertTriangle, FileText, Search } from 'lucide-react';
+import { getAllUsers } from '../services/user';
+import getTransactions from "../services/transaction.js";
 
 const Page = () => {
   const userName = 'Sahas Sharma';
   const assetsManaged = '$1.2 Billion';
   const activeClients = 350;
 
-  // Mock transaction data for each client
-  const clientTransactions = {
-    '8472-9123': [ // Sarah Johnson
-      { id: 1, date: '2024-03-15', amount: 50000, type: 'Deposit', status: 'Completed' },
-      { id: 2, date: '2024-03-10', amount: -15000, type: 'Withdrawal', status: 'Completed' },
-      { id: 3, date: '2024-03-05', amount: 25000, type: 'Investment', status: 'Pending' },
-    ],
-    '8472-9124': [ // Michael Chen
-      { id: 4, date: '2024-03-14', amount: 100000, type: 'Transfer', status: 'Completed' },
-      { id: 5, date: '2024-03-09', amount: -30000, type: 'Withdrawal', status: 'Failed' },
-      { id: 6, date: '2024-03-01', amount: 75000, type: 'Deposit', status: 'Completed' },
-    ],
-    '8472-9125': [ // Emily Rodriguez
-      { id: 7, date: '2024-03-13', amount: 20000, type: 'Investment', status: 'Completed' },
-      { id: 8, date: '2024-03-08', amount: -5000, type: 'Withdrawal', status: 'Completed' },
-      { id: 9, date: '2024-03-03', amount: 15000, type: 'Deposit', status: 'Completed' },
-    ],
-    '8472-9126': [ // David Kim
-      { id: 10, date: '2024-03-12', amount: 200000, type: 'Transfer', status: 'Pending' },
-      { id: 11, date: '2024-03-07', amount: -50000, type: 'Withdrawal', status: 'Completed' },
-      { id: 12, date: '2024-03-02', amount: 150000, type: 'Deposit', status: 'Completed' },
-    ],
-    '8472-9127': [ // Rachel Thompson
-      { id: 13, date: '2024-03-11', amount: 30000, type: 'Investment', status: 'Completed' },
-      { id: 14, date: '2024-03-06', amount: -10000, type: 'Withdrawal', status: 'Failed' },
-      { id: 15, date: '2024-03-04', amount: 25000, type: 'Deposit', status: 'Completed' },
-    ],
+  const [users, setusers] = useState([])
+  const [transactions, setTransactions] = useState([])
+
+  const fetchTransactions = async (userID) => {
+    const transactions = await getTransactions(userID);
+    console.log(transactions)
+    setTransactions(transactions);
+    setCurrentTransactions(transactions);
+  };
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const users = await getAllUsers();
+      setusers(users);
+      console.log(users);
+    };
+
+    fetchUsers();
+  }, []);
+
+  const openTransactionModal = (client) => {
+    setSelectedClient(client);
+    fetchTransactions(client.id)
+
+    console.log(currentTransactions)
+    document.getElementById('transaction_modal').showModal();
   };
 
-  const clients = [
-    { id: 1, name: 'Sarah Johnson', accountNumber: '8472-9123', riskLevel: 'Low' },
-    { id: 2, name: 'Michael Chen', accountNumber: '8472-9124', riskLevel: 'Medium' },
-    { id: 3, name: 'Emily Rodriguez', accountNumber: '8472-9125', riskLevel: 'Low' },
-    { id: 4, name: 'David Kim', accountNumber: '8472-9126', riskLevel: 'High' },
-    { id: 5, name: 'Rachel Thompson', accountNumber: '8472-9127', riskLevel: 'Medium' }
-  ];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -56,9 +49,9 @@ const Page = () => {
     setSearchTerm(searchValue);
     
     if (searchValue.length >= 2) {
-      const filtered = clients.filter((client) =>
+      const filtered = users.filter((client) =>
         client.name.toLowerCase().includes(searchValue) ||
-        client.accountNumber.includes(searchValue)
+        client.email.includes(searchValue)
       );
       setSearchResults(filtered);
       setShowResults(true);
@@ -88,11 +81,6 @@ const Page = () => {
     setCurrentTransactions(sortedTransactions);
   };
 
-  const openTransactionModal = (client) => {
-    setSelectedClient(client);
-    setCurrentTransactions(clientTransactions[client.accountNumber]);
-    document.getElementById('transaction_modal').showModal();
-  };
 
   const openFraudModal = (client) => {
     setSelectedClient(client);
@@ -164,7 +152,7 @@ const Page = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-semibold text-lg text-primary">{client.name}</h3>
-                          <p className="text-base-content/80">Account: {client.accountNumber}</p>
+                          <p className="text-base-content/80">Account: {client.email}</p>
                         </div>
                         <div className="flex gap-3">
                           <button
@@ -229,7 +217,7 @@ const Page = () => {
                 </thead>
                 <tbody>
                   {currentTransactions.map((transaction) => (
-                    <tr key={transaction.id}>
+                    <tr key={transaction.transaction_id}>
                       <td>{new Date(transaction.date).toLocaleDateString()}</td>
                       <td>{transaction.type}</td>
                       <td className={transaction.amount < 0 ? 'text-error' : 'text-success'}>
