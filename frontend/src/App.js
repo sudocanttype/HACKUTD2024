@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import './App.css';
 import VaishPage from './Vaish/page'; // Import VaishPage component
 import SahasPage from './Sahas/page'; // Import SahasPage component
+import CreateAcc from './CreateAcc/page';
 
 function App() {
   return (
@@ -11,6 +12,8 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/Vaish/page" element={<VaishPage />} /> {/* Route for Vaish's page */}
         <Route path="/Sahas/page" element={<SahasPage />} /> {/* Route for Sahas's page */}
+        <Route path="/CreateAcc" element={<CreateAcc/>} />
+
       </Routes>
     </Router>
   );
@@ -26,7 +29,7 @@ function LoginPage() {
     if (email === "Vaish@g") {
       navigate('/Vaish/page'); // Navigate to Vaish's page
     } else if (email === "Sahas@g") {
-      navigate('/Sahas/page'); // Navigate to Sahas's page
+      navigate('/CreateAcc'); // Navigate to Sahas's page
     } else {
       alert('Invalid username or password');
     }

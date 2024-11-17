@@ -12,8 +12,26 @@ const generateRandomDate = () => {
 };
 
 const VaishPage = () => {
+    const [depositAmounStore, setDepositAmountStore] = useState(""); // For deposit amount
+    const [uploadedImage, setUploadedImage] = useState(null); // For uploaded image
+    
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", dollars: "" });
 
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    const email = event.target.email.value;
+    const dollars = event.target.dollars.value;
+
+    // Store the data in the state
+    setFormData({ email, dollars });
+
+    // Optionally, log the data or send it to an API
+    console.log("Stored Data:", { email, dollars });
+
+    // Close the modal if needed
+    document.getElementById("my_modal_3").close();
+  };
   // State to manage modals
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [imageBase64, setImageBase64] = useState(""); // Store base64 image
@@ -80,31 +98,40 @@ const VaishPage = () => {
 
   // Handle deposit confirmation
   const handleDeposit = () => {
-    // First close the modal
-    document.getElementById("my_modal_3").close();
-
-    // Then show the confirmation message after a brief delay
+    // Close the modal
+    document.getElementById("my_modal_4").close();
+  
+    // Store the contents (deposit amount and uploaded image)
+    const depositData = {
+      amount: depositAmount,
+      image: uploadedImage,
+    };
+  
+    // Log the deposit data or send it to the server
+    console.log("Deposit Data:", depositData);
+  
+    // Optionally, show a confirmation message
     setTimeout(() => {
       setShowConfirmation(true);
-
+  
       // Hide the confirmation message after 2 seconds
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
     }, 100); // Small delay to ensure modal closes smoothly
   };
+  
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64String = reader.result;
-        setImageBase64(base64String);
-        document.getElementById("uploadedImage").src = base64String;
+        setUploadedImage(reader.result); // Save the base64 image to state
       };
       reader.readAsDataURL(file);
     }
   };
+  
 
   return (
     <>
@@ -173,92 +200,137 @@ const VaishPage = () => {
               >
                 Nelle
               </button>
+
               <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
-                  <form method="dialog">
-                    {/* if there is a button in form, it will close the modal */}
+                  <form onSubmit={handleSubmit}>
+                    {/* Close button */}
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                       ✕
                     </button>
+                    <h3 className="font-bold text-lg">Nelle</h3>
+                    <p className="py-4">Send money to people you know</p>
+
+                    {/* Email input */}
+                    <label
+                      className="block mb-2 text-sm font-medium"
+                      htmlFor="email"
+                    >
+                      Email:
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="input input-bordered w-full mb-4"
+                      placeholder="Enter your email"
+                      required
+                    />
+
+                    {/* Dollar input */}
+                    <label
+                      className="block mb-2 text-sm font-medium"
+                      htmlFor="dollars"
+                    >
+                      Amount in dollars:
+                    </label>
+                    <input
+                      type="number"
+                      id="dollars"
+                      name="dollars"
+                      className="input input-bordered w-full mb-4"
+                      placeholder="Enter the amount"
+                      min="1"
+                      required
+                    />
+
+                    {/* Send button */}
+                    <button
+                      className="btn btn-primary w-full mt-4"
+                      type="submit"
+                    >
+                      Send
+                    </button>
                   </form>
-                  <h3 className="font-bold text-lg">Hello!</h3>
-                  <p className="py-4">
-                    Press ESC key or click on ✕ button to close
-                  </p>
                 </div>
               </dialog>
 
               <dialog id="my_modal_4" className="modal">
-                <div className="modal-box w-11/12 max-w-5xl">
-                  <form method="dialog">
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                      ✕
-                    </button>
-                  </form>
-                  <h3 className="font-bold text-lg">Upload Check</h3>
-                  <p className="py-4">
-                    Enter deposit amount and upload check image:
-                  </p>
+  <div className="modal-box w-11/12 max-w-5xl">
+    <form method="dialog">
+      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+        ✕
+      </button>
+    </form>
+    <h3 className="font-bold text-lg">Upload Check</h3>
+    <p className="py-4">Enter deposit amount and upload check image:</p>
 
-                  {/* Deposit Amount Input */}
-                  <div className="mb-6">
-                    <label
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                      htmlFor="depositAmount"
-                    >
-                      Deposit Amount ($)
-                    </label>
-                    <input
-                      type="number"
-                      id="depositAmount"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      className="input input-bordered w-full max-w-xs"
-                      placeholder="Enter amount"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
+    {/* Deposit Amount Input */}
+    <div className="mb-6">
+      <label
+        className="block text-gray-700 text-sm font-bold mb-2"
+        htmlFor="depositAmount"
+      >
+        Deposit Amount ($)
+      </label>
+      <input
+        type="number"
+        id="depositAmount"
+        value={depositAmount}
+        onChange={(e) => setDepositAmount(e.target.value)}
+        className="input input-bordered w-full max-w-xs"
+        placeholder="Enter amount"
+        min="0"
+        step="0.01"
+      />
+    </div>
 
-                  <div className="flex flex-col items-center">
-                    <label
-                      htmlFor="fileUpload"
-                      className="flex flex-col items-center cursor-pointer p-6 bg-indigo-100 rounded-lg shadow-md hover:bg-indigo-200 transition-colors duration-300"
-                    >
-                      <div className="bg-white p-5 rounded-full shadow-lg">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          className="w-12 h-12 text-indigo-600"
-                        >
-                          <path d="M12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6ZM12 14C8.13401 14 5 17.134 5 20H19C19 17.134 15.866 14 12 14Z"></path>
-                        </svg>
-                      </div>
-                      <div className="mt-4 text-indigo-600 font-medium">
-                        <span>Click or Drag to Upload Check</span>
-                      </div>
-                      <input
-                        id="fileUpload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
-                    <img
-                      id="uploadedImage"
-                      src=""
-                      alt="Uploaded Preview"
-                      className="max-w-full h-auto mt-4 rounded-lg shadow-md border max-h-[00px] overflow-auto"
-                    />
-                  </div>
-                  <button className="btn mt-4" onClick={handleDeposit}>
-                    Deposit Check
-                  </button>
-                </div>
-              </dialog>
+    <div className="flex flex-col items-center">
+      <label
+        htmlFor="fileUpload"
+        className="flex flex-col items-center cursor-pointer p-6 bg-indigo-100 rounded-lg shadow-md hover:bg-indigo-200 transition-colors duration-300"
+      >
+        <div className="bg-white p-5 rounded-full shadow-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            className="w-12 h-12 text-indigo-600"
+          >
+            <path d="M12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6ZM12 14C8.13401 14 5 17.134 5 20H19C19 17.134 15.866 14 12 14Z"></path>
+          </svg>
+        </div>
+        <div className="mt-4 text-indigo-600 font-medium">
+          <span>Click or Drag to Upload Check</span>
+        </div>
+        <input
+          id="fileUpload"
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
+      </label>
+      
+      {/* Image Preview */}
+      {uploadedImage && (
+        <img
+          id="uploadedImage"
+          src={uploadedImage}
+          alt="Uploaded Preview"
+          className="max-w-full h-auto mt-4 rounded-lg shadow-md border max-h-[300px] overflow-auto"
+        />
+      )}
+    </div>
+
+    <button className="btn mt-4" onClick={handleDeposit}>
+      Deposit Check
+    </button>
+  </div>
+</dialog>
+        
+                   
 
               {/* Confirmation Modal */}
               {showConfirmation && (
