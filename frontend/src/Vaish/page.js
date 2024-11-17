@@ -37,6 +37,7 @@ const VaishPage = () => {
   const [imageBase64, setImageBase64] = useState(""); // Store base64 image
   const [depositAmount, setDepositAmount] = useState(""); // Store deposit amount
   const [transactions, setTransactions] = useState([])
+  const [userProfile, setUserProfile] = useState(null);
   const [user, setUser] = useState(null);
 
   const userID = 1; //TODO: really get
@@ -58,71 +59,7 @@ const VaishPage = () => {
   }, [userID]);
 
 
-  // Transaction data array with random dates
-<<<<<<< HEAD
 
-  console.log(transactions)
-=======
-  const userProfile = {
-    fullName: "Vaishnavi Sharma",
-    email: "vaishnavi.sharma@example.com",
-    address: "123 Tech Park Avenue, Silicon Valley, CA 94025",
-    phone: "(555) 123-4567",
-    accountType: "ClearWay Banking",
-    DOB: "January 2020"
-  };
-  const transactions = [
-    {
-      user_id: "user123",
-      amount: 5000,
-      date: generateRandomDate(),
-      merchant_location: "Grocery Store, Downtown",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 1200,
-      date: generateRandomDate(),
-      merchant_location: "Online Shopping, Amazon",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 500,
-      date: generateRandomDate(),
-      merchant_location: "Coffee Shop, Central Plaza",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 2000,
-      date: generateRandomDate(),
-      merchant_location: "Apartment Complex, Main St.",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 1500,
-      date: generateRandomDate(),
-      merchant_location: "Restaurant, Uptown",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 1000,
-      date: generateRandomDate(),
-      merchant_location: "Movie Theater, Westside",
-      status: "Completed",
-      type: "Debit",
-    },
-  ];
-
->>>>>>> origin/frontend
   // State to manage if user wants to see more transactions
   const [showAll, setShowAll] = useState(false);
 
@@ -130,7 +67,6 @@ const VaishPage = () => {
   const toggleShowAll = () => setShowAll(!showAll);
 
   // Handle deposit confirmation
-<<<<<<< HEAD
   const handleDeposit = async () => {
     // Close the modal first
     document.getElementById("my_modal_4").close();
@@ -143,26 +79,6 @@ const VaishPage = () => {
       setShowConfirmation(true);
   
       // Hide the confirmation message after 3 seconds
-=======
-  const handleDeposit = () => {
-    // Close the modal
-    document.getElementById("my_modal_4").close();
-  
-    // Store the contents (deposit amount and uploaded image)
-    const depositData = {
-      amount: depositAmount,
-      image: uploadedImage,
-    };
-  
-    // Log the deposit data or send it to the server
-    console.log("Deposit Data:", depositData);
-  
-    // Optionally, show a confirmation message
-    setTimeout(() => {
-      setShowConfirmation(true);
-  
-      // Hide the confirmation message after 2 seconds
->>>>>>> origin/frontend
       setTimeout(() => {
         setShowConfirmation(false);
       }, 3000);
@@ -267,15 +183,9 @@ const VaishPage = () => {
 
         <div className="mx-10 my-36">
           <div className="flex justify-between items-center my-5">
-<<<<<<< HEAD
             <div className="w-1/2">
               <h1 className="text-4xl font-semibold text-gray-800">
                 Welcome, {(user == null) ? "" : user.name}.
-=======
-            <div className="w-1/2 mx-5">
-              <h1 className="text-4xl  font-semibold text-gray-800">
-                Welcome, Vaishnavi
->>>>>>> origin/frontend
               </h1>
               <p className="text-lg text-gray-600 mt-2">
                 Here's your financial overview:
