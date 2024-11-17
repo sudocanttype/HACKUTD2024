@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthWrapper from "../components/authwrapper";
 import getTransactions from "../services/transaction.js";
-import { getUser } from "../services/user.js";
+import { getUser, getUserByEmail } from "../services/user.js";
 import { createCheckDeposit } from "../services/deposit_check.js";
+import { useAuth0 } from "@auth0/auth0-react";
 // Helper function to generate random dates for the transactions
 
 
@@ -39,24 +40,31 @@ const VaishPage = () => {
   const [transactions, setTransactions] = useState([])
   const [user, setUser] = useState(null);
 
-  const userID = 1; //TODO: really get
+  const { user: current_user, isLoading } = useAuth0();
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      const transactions = await getTransactions(userID);
-      setTransactions(transactions);
-    };
+    useEffect(() => {
+        if (!isLoading) {
+            // Wait until `isLoading` is false
+            const fetchUserData = async () => {
+                try {
+                    const fetchedUser = await getUserByEmail(current_user.email);
 
-    const fetchUser = async () => {
-      const user = await getUser(userID);
-      console.log(user);
-      setUser(user);
-    }
+                    console.log("fetched user:")
+                    console.log(fetchedUser)
+                    setUser(fetchedUser);
 
-    fetchTransactions();
-    fetchUser();
-  }, [userID]);
+                    if (fetchedUser) {
+                        const fetchedTransactions = await getTransactions(fetchedUser.id);
+                        setTransactions(fetchedTransactions);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user or transactions:", error);
+                }
+            };
 
+            fetchUserData();
+        }
+    }, [isLoading, current_user]);
 
   // Transaction data array with random dates
 
@@ -74,7 +82,7 @@ const VaishPage = () => {
   
     try {
       // Call the API to create a check deposit
-      await createCheckDeposit(userID, imageBase64, parseFloat(depositAmount));
+      await createCheckDeposit(user['id'], imageBase64, parseFloat(depositAmount));
   
       // Show the confirmation message after the deposit is successfully created
       setShowConfirmation(true);
@@ -144,41 +152,46 @@ const VaishPage = () => {
             <form method="dialog">
               <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="avatar">
-                <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+            {user && (
+              <>
+                <div className="flex items-center space-x-4 mb-6">
+                  <div className="avatar">
+                    <div className="w-20 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                      <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800">{user.name}</h3>
+                    <p className="text-indigo-600">Account Holder</p>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-800">{userProfile.fullName}</h3>
-                <p className="text-indigo-600">{userProfile.accountType}</p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="text-sm font-semibold text-gray-600 mb-2">Email Address</h4>
-                <p className="text-gray-800">{userProfile.email}</p>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="text-sm font-semibold text-gray-600 mb-2">Mailing Address</h4>
-                <p className="text-gray-800">{userProfile.address}</p>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="text-sm font-semibold text-gray-600 mb-2">Phone Number</h4>
-                <p className="text-gray-800">{userProfile.phone}</p>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="text-sm font-semibold text-gray-600 mb-2">Date of Birth</h4>
-                <p className="text-gray-800">{userProfile.DOB}</p>
-              </div>
-            </div>
 
-        
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-600 mb-2">Email Address</h4>
+                    <p className="text-gray-800">{user.email}</p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-600 mb-2">Mailing Address</h4>
+                    <p className="text-gray-800">{user.address}</p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-600 mb-2">Phone Number</h4>
+                    <p className="text-gray-800">{user.phone}</p>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-600 mb-2">Date of Birth</h4>
+                    <p className="text-gray-800">{user.bday}</p>
+                  </div>
+                </div>
+              </>
+            )}
+            {!user && (
+              <p className="text-center text-gray-600">Loading user information...</p>
+            )}
           </div>
         </dialog>
 
@@ -392,28 +405,30 @@ const VaishPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((transaction, index) => (
-                      <tr
-                        key={index}
-                        className={`${
-                          index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                        } hover:bg-indigo-100`}
-                      >
-                        <td className="border-b px-6 py-4">
-                          {transaction.date}
-                        </td>
-                        <td className="border-b px-6 py-4 text-indigo-600">
-                          ${transaction.amount.toLocaleString()}
-                        </td>
-                        <td className="border-b px-6 py-4">
-                          {transaction.merchant_location}
-                        </td>
-                        <td className="border-b px-6 py-4">
-                          {transaction.status}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+  {transactions.length === 0 ? (
+    <tr>
+      <td colSpan="4" className="text-center text-gray-500 py-4">
+        No recent transactions
+      </td>
+    </tr>
+  ) : (
+    transactions.map((transaction, index) => (
+      <tr
+        key={index}
+        className={`${
+          index % 2 === 0 ? "bg-gray-50" : "bg-white"
+        } hover:bg-indigo-100`}
+      >
+        <td className="border-b px-6 py-4">{transaction.date}</td>
+        <td className="border-b px-6 py-4 text-indigo-600">
+          ${transaction.amount.toLocaleString()}
+        </td>
+        <td className="border-b px-6 py-4">{transaction.merchant_location}</td>
+        <td className="border-b px-6 py-4">{transaction.status}</td>
+      </tr>
+    ))
+  )}
+</tbody>
                 </table>
               </div>
             </div>

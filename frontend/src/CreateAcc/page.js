@@ -1,40 +1,53 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState } from "react";
+import { createUser } from "../services/user"; // Assuming this is where your service is defined
 
 function CreateAcc() {
+  const { user } = useAuth0();
   const [fullName, setFullName] = useState("");
   const [ssn, setSsn] = useState("");
   const [bday, setBday] = useState("");
   const [address, setAddress] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const email = user.email;
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation
-    if (!fullName || !ssn || !bday || !address || !email || !phone) {
+    if (!fullName || !ssn || !bday || !address || !phone) {
       setErrorMessage("All fields are required");
       return;
     }
 
-    // Handle form submission (e.g., send to API)
-    console.log("Account Created", {
-      fullName,
+    const userData = {
+      name: fullName,
       ssn,
       bday,
       address,
       email,
       phone,
-    });
+    };
 
-    // Reset the form after submission (optional)
-    setFullName("");
-    setSsn("");
-    setBday("");
-    setAddress("");
-    setEmail("");
-    setPhone("");
+    try {
+      // Call the createUser service
+      const createdUser = await createUser(userData);
+      setSuccessMessage(`Account created successfully for ${createdUser.name}`);
+      setErrorMessage("");
+
+      // Reset the form after successful submission
+      setFullName("");
+      setSsn("");
+      setBday("");
+      setAddress("");
+      setPhone("");
+    } catch (error) {
+      setErrorMessage(error.message || "An error occurred while creating the account.");
+      setSuccessMessage("");
+    }
   };
 
   // Function to format SSN as XXX-XX-XXXX
@@ -127,9 +140,8 @@ function CreateAcc() {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
               className="input input-bordered w-full max-w-xs"
-              placeholder="Enter your email"
+              disabled
               required
             />
           </div>
@@ -150,6 +162,11 @@ function CreateAcc() {
             />
           </div>
 
+          {/* Success Message */}
+          {successMessage && (
+            <p className="text-green-500 text-sm">{successMessage}</p>
+          )}
+
           {/* Error Message */}
           {errorMessage && (
             <p className="text-red-500 text-sm">{errorMessage}</p>
@@ -164,9 +181,6 @@ function CreateAcc() {
           </button>
         </form>
       </div>
-
-
-  
     </div>
   );
 }

@@ -31,3 +31,26 @@ export const getUserByEmail = async (email) => {
     }
 };
 
+export const createUser = async (userData) => {
+    // Map the schema to ensure it matches Python's schema fields
+    const requiredFields = ["name", "ssn", "bday", "address", "email", "phone"];
+    const missingFields = requiredFields.filter(field => !(field in userData));
+
+    if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+    }
+
+    try {
+        const response = await apiClient.post('/users', userData);
+        return response.data['user'];
+    } catch (error) {
+        if (error.response && error.response.status === 400) {
+            // Handle validation errors from the server
+            console.error('Validation error:', error.response.data.message);
+            throw new Error(error.response.data.message);
+        }
+        // Re-throw other errors
+        console.error(error);
+        throw error;
+    }
+};
