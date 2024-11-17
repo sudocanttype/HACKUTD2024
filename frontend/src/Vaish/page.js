@@ -160,12 +160,11 @@ const VaishPage = () => {
               <button
                 className="btn glass w-48 hover:bg-indigo-300 bg-indigo-200 skeleton rounded-md"
                 onClick={() =>
-                  document.getElementById("my_modal_3").showModal()
+                  document.getElementById("my_modal_4").showModal()
                 }
               >
                 Deposit Check
               </button>
-              {/* You can open the modal using document.getElementById('ID').showModal() method */}
               <button
                 className="font-bold btn text-white ml-10 w-48 py-4 bg-indigo-500 hover:bg-indigo-600 rounded-2xl "
                 onClick={() =>
@@ -189,7 +188,7 @@ const VaishPage = () => {
                 </div>
               </dialog>
 
-              <dialog id="my_modal_3" className="modal">
+              <dialog id="my_modal_4" className="modal">
                 <div className="modal-box w-11/12 max-w-5xl">
                   <form method="dialog">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
