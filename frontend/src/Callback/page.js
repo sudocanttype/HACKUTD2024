@@ -20,6 +20,8 @@ export default function Callback(){
                         refreshToken: true
                     });
 
+                    
+
 
                     if (isEmployee(user)) {
                         navigate('/employee');

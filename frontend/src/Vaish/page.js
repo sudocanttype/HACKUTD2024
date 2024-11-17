@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthWrapper from "../components/authwrapper";
-
+import getTransactions from "../services/transaction.js";
 // Helper function to generate random dates for the transactions
 const generateRandomDate = () => {
   const start = new Date(2023, 0, 1); // January 1st, 2023
@@ -14,66 +14,27 @@ const generateRandomDate = () => {
 
 
 const VaishPage = () => {
-  const navigate = useNavigate();
 
   // State to manage modals
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [imageBase64, setImageBase64] = useState(""); // Store base64 image
   const [depositAmount, setDepositAmount] = useState(""); // Store deposit amount
+  const [transactions, setTransactions] = useState([])
+  const userID = 1; //TODO: really get
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const transactions = await getTransactions(userID);
+      setTransactions(transactions);
+    };
+
+    fetchTransactions();
+  }, [userID]);
+
 
   // Transaction data array with random dates
 
-  const transactions = [
-    {
-      user_id: "user123",
-      amount: 5000,
-      date: generateRandomDate(),
-      merchant_location: "Grocery Store, Downtown",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 1200,
-      date: generateRandomDate(),
-      merchant_location: "Online Shopping, Amazon",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 500,
-      date: generateRandomDate(),
-      merchant_location: "Coffee Shop, Central Plaza",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 2000,
-      date: generateRandomDate(),
-      merchant_location: "Apartment Complex, Main St.",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 1500,
-      date: generateRandomDate(),
-      merchant_location: "Restaurant, Uptown",
-      status: "Completed",
-      type: "Debit",
-    },
-    {
-      user_id: "user123",
-      amount: 1000,
-      date: generateRandomDate(),
-      merchant_location: "Movie Theater, Westside",
-      status: "Completed",
-      type: "Debit",
-    },
-  ];
-
+  console.log(transactions)
   // State to manage if user wants to see more transactions
   const [showAll, setShowAll] = useState(false);
 
