@@ -4,7 +4,7 @@ import './App.css';
 import VaishPage from './Vaish/page'; // Import VaishPage component
 import SahasPage from './Sahas/page'; // Import SahasPage component
 import Callback from './Callback/page';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import CreateAcc from "./CreateAcc/page";
 
 function App() {
@@ -34,10 +34,10 @@ function App() {
 }
 
 function LandingPage() {
-  const navigate = useNavigate();
 
+  const {loginWithRedirect} = useAuth0();
   const handleGetStarted = () => {
-    navigate('/login');
+    loginWithRedirect();
   };
 
   return (

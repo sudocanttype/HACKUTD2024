@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState } from "react";
 import { createUser } from "../services/user"; // Assuming this is where your service is defined
-
+import { useNavigate } from "react-router-dom";
 function CreateAcc() {
   const { user } = useAuth0();
   const [fullName, setFullName] = useState("");
@@ -11,11 +11,14 @@ function CreateAcc() {
   const [phone, setPhone] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
+  
   const email = user.email;
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
 
     // Basic validation
     if (!fullName || !ssn || !bday || !address || !phone) {
@@ -44,6 +47,9 @@ function CreateAcc() {
       setBday("");
       setAddress("");
       setPhone("");
+
+      navigate("/customer"); // Redirect to the home page
+      
     } catch (error) {
       setErrorMessage(error.message || "An error occurred while creating the account.");
       setSuccessMessage("");
